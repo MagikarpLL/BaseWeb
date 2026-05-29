@@ -233,6 +233,12 @@ export const blogApi = {
     sort?: string
   }): Promise<AxiosResponse<ApiResponse<any>>> =>
     request.get('/blog/posts', { params }),
+  searchPosts: (params: {
+    q: string
+    page?: number
+    size?: number
+  }): Promise<AxiosResponse<ApiResponse<any>>> =>
+    request.get('/blog/search', { params }),
   getPost: (slug: string): Promise<AxiosResponse<ApiResponse<Post>>> =>
     request.get(`/blog/posts/${slug}`),
   incrementView: (slug: string): Promise<AxiosResponse<ApiResponse<void>>> =>
@@ -242,7 +248,9 @@ export const blogApi = {
   getComments: (slug: string): Promise<AxiosResponse<ApiResponse<Comment[]>>> =>
     request.get(`/blog/posts/${slug}/comments`),
   createComment: (slug: string, data: CommentFormData): Promise<AxiosResponse<ApiResponse<Comment>>> =>
-    request.post(`/blog/posts/${slug}/comments`, data)
+    request.post(`/blog/posts/${slug}/comments`, data),
+  getRelatedPosts: (slug: string): Promise<AxiosResponse<ApiResponse<Post[]>>> =>
+    request.get(`/blog/posts/${slug}/related`)
 }
 
 // Public API
@@ -278,6 +286,22 @@ export const tagApi = {
 }
 
 // Admin Post API
+export interface PostHistory {
+  id: number
+  postId: number
+  title: string
+  content: string
+  excerpt: string
+  status: string
+  createdAt: string
+  createdBy: number | null
+}
+
+export interface CompareHistoryParams {
+  from: number
+  to: number
+}
+
 export const adminPostApi = {
   getPosts: (params?: {
     page?: number
@@ -300,7 +324,15 @@ export const adminPostApi = {
   draftPost: (id: number): Promise<AxiosResponse<ApiResponse>> =>
     request.post(`/admin/posts/${id}/draft`),
   toggleTop: (id: number): Promise<AxiosResponse<ApiResponse>> =>
-    request.post(`/admin/posts/${id}/top`)
+    request.post(`/admin/posts/${id}/top`),
+  getPostHistory: (id: number): Promise<AxiosResponse<ApiResponse<PostHistory[]>>> =>
+    request.get(`/admin/posts/${id}/history`),
+  getHistoryDetail: (postId: number, historyId: number): Promise<AxiosResponse<ApiResponse<PostHistory>>> =>
+    request.get(`/admin/posts/${postId}/history/${historyId}`),
+  compareHistory: (postId: number, params: CompareHistoryParams): Promise<AxiosResponse<ApiResponse<{ from: PostHistory; to: PostHistory }>>> =>
+    request.get(`/admin/posts/${postId}/history/compare`, { params }),
+  restoreHistory: (postId: number, historyId: number): Promise<AxiosResponse<ApiResponse>> =>
+    request.post(`/admin/posts/${postId}/history/${historyId}/restore`)
 }
 
 // Admin Comment API

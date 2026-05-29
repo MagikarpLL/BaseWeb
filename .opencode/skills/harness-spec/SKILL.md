@@ -34,6 +34,76 @@ Spec 生成与确认技能，负责根据需求文档生成技术规格文档。
 
 ## 命令
 
+### /harness-spec help
+
+显示帮助信息，列出所有可用命令和用法。
+
+**动作：**
+1. 返回技能概述和所有命令列表
+
+**输出示例：**
+```
+# 📖 harness-spec 技能帮助
+
+## 技能概述
+Spec 生成与确认技能，负责根据需求文档生成技术规格文档。
+
+## 可用命令
+
+### 1. /harness-spec help
+显示此帮助信息
+
+### 2. /harness-spec start <requirement_doc>
+开始或恢复 Spec 生成
+**示例**: `/harness-spec start docs/requirements/01-博客列表.md`
+
+### 3. /harness-spec analyze
+分析需求文档，提取关键信息
+**示例**: `/harness-spec analyze`
+
+### 4. /harness-spec generate <content>
+生成或更新 Spec 文档
+**示例**: `/harness-spec generate "# 博客列表规格..."`
+
+### 5. /harness-spec generate-from-template
+使用模板生成 Spec 文档
+**示例**: `/harness-spec generate-from-template`
+
+### 6. /harness-spec clarify <question>
+向用户提问以澄清技术细节
+**示例**: `/harness-spec clarify 是否需要支持草稿状态？`
+
+### 7. /harness-spec request
+请求用户确认 Spec 文档
+**示例**: `/harness-spec request`
+
+### 8. /harness-spec confirm
+确认 Spec 文档已通过
+**示例**: `/harness-spec confirm`
+
+### 9. /harness-spec link-requirement <requirement_doc>
+关联需求文档（当 Spec 涉及多个需求时）
+**示例**: `/harness-spec link-requirement docs/requirements/02-博客详情.md`
+
+### 10. /harness-spec status
+查看当前 Spec 生成状态
+**示例**: `/harness-spec status`
+
+### 11. /harness-spec reset
+重置 Spec 生成状态
+**示例**: `/harness-spec reset`
+
+## 快速开始
+
+```bash
+/harness-spec start docs/requirements/xxx.md
+```
+```
+
+**用法：** `/harness-spec help`
+
+---
+
 ### /harness-spec start `<requirement_doc>`
 
 开始或恢复 Spec 生成。

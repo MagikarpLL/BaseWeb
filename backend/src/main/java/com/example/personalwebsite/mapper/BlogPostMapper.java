@@ -23,6 +23,12 @@ public interface BlogPostMapper {
     @Select("SELECT * FROM blog_post WHERE deleted_at IS NULL AND title LIKE '%' || #{keyword} || '%' ORDER BY created_at DESC")
     List<BlogPost> searchPosts(@Param("keyword") String keyword);
 
+    @Select("SELECT * FROM blog_post WHERE status = 'published' AND deleted_at IS NULL AND (title ILIKE '%' || #{keyword} || '%' OR content ILIKE '%' || #{keyword} || '%') ORDER BY published_at DESC LIMIT #{limit} OFFSET #{offset}")
+    List<BlogPost> searchPostsPaginated(@Param("keyword") String keyword, @Param("limit") int limit, @Param("offset") int offset);
+
+    @Select("SELECT COUNT(*) FROM blog_post WHERE status = 'published' AND deleted_at IS NULL AND (title ILIKE '%' || #{keyword} || '%' OR content ILIKE '%' || #{keyword} || '%')")
+    long countSearchResults(@Param("keyword") String keyword);
+
     @Select("SELECT * FROM blog_post WHERE category_id = #{categoryId} AND status = 'published' AND deleted_at IS NULL")
     List<BlogPost> findByCategoryId(@Param("categoryId") Long categoryId);
 
@@ -53,6 +59,31 @@ public interface BlogPostMapper {
 
     @Select("SELECT * FROM blog_post WHERE status = 'published' AND deleted_at IS NULL AND category_id = #{categoryId} AND id != #{excludeId} ORDER BY published_at DESC LIMIT #{limit}")
     List<BlogPost> findRelatedPosts(@Param("categoryId") Long categoryId, @Param("excludeId") Long excludeId, @Param("limit") Integer limit);
+
+    /**
+     * Find related posts using multi-dimensional scoring algorithm.
+     * Scoring:
+     *   - Same category: +3
+     *   - Same tag (per tag): +2
+     *   - Published within 7 days: +1
+     *   - Higher read count: +0.01 per read (normalized)
+     */
+    @Select("""
+        SELECT p.* FROM blog_post p
+        LEFT JOIN blog_post_tag bpt ON p.id = bpt.post_id
+        WHERE p.status = 'published'
+          AND p.deleted_at IS NULL
+          AND p.id != #{excludeId}
+        GROUP BY p.id
+        ORDER BY
+          CASE WHEN p.category_id = #{categoryId} THEN 3 ELSE 0 END +
+          COALESCE((SELECT COUNT(*) FROM blog_post_tag bpt2 WHERE bpt2.post_id = p.id AND bpt2.tag_id IN (<foreach collection='tagIds' item='tag' separator=','>#{tag}</foreach>)), 0) * 2 +
+          CASE WHEN p.published_at > NOW() - INTERVAL '7 days' THEN 1 ELSE 0 END +
+          LEAST(p.read_count * 0.01, 5)
+        DESC
+        LIMIT #{limit}
+        """)
+    List<BlogPost> findRelatedPostsWithScoring(@Param("categoryId") Long categoryId, @Param("excludeId") Long excludeId, @Param("limit") Integer limit, @Param("tagIds") List<Long> tagIds);
 
     @Select("SELECT * FROM blog_post WHERE status = 'published' AND deleted_at IS NULL ORDER BY read_count DESC LIMIT #{limit}")
     List<BlogPost> findPopularPosts(@Param("limit") Integer limit);

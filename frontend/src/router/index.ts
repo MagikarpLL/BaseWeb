@@ -88,6 +88,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/PostEdit.vue')
       },
       {
+        path: 'posts/:id/history',
+        name: 'PostHistory',
+        component: () => import('@/views/admin/PostHistory.vue')
+      },
+      {
         path: 'categories',
         name: 'CategoryManage',
         component: () => import('@/views/admin/CategoryManage.vue')

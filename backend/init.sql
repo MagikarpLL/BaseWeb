@@ -117,3 +117,19 @@ CREATE TABLE IF NOT EXISTS daily_stats (
     total_uv INTEGER DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Post history table
+CREATE TABLE IF NOT EXISTS post_history (
+    id BIGSERIAL PRIMARY KEY,
+    post_id BIGINT NOT NULL REFERENCES blog_post(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    excerpt TEXT,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT REFERENCES users(id)
+);
+
+-- Index for post_history
+CREATE INDEX IF NOT EXISTS idx_post_history_post_id ON post_history(post_id);
+CREATE INDEX IF NOT EXISTS idx_post_history_created_at ON post_history(created_at DESC);

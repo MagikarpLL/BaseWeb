@@ -9,6 +9,7 @@ RUN mvn dependency:go-offline -B
 
 # Copy source and build
 COPY src ./src
+COPY checkstyle.xml ./
 RUN mvn package -DskipTests -B
 
 # Runtime stage

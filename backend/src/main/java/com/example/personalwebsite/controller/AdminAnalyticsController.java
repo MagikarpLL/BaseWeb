@@ -150,13 +150,18 @@ public class AdminAnalyticsController {
         long todayPV = pageViewService.countByDate(today);
         long todayUV = uniqueVisitorService.countByDate(today);
 
+        // Yesterday's PV/UV
+        LocalDate yesterday = today.minusDays(1);
+        long yesterdayPV = pageViewService.countByDate(yesterday);
+        long yesterdayUV = uniqueVisitorService.countByDate(yesterday);
+
         // Recent posts with view count
         List<BlogPost> recentPosts = blogPostService.findLatestPosts(5);
         List<AnalyticsOverviewDTO.RecentPostDTO> recentPostsData = recentPosts.stream()
                 .map(post -> new AnalyticsOverviewDTO.RecentPostDTO(
                         post.getId(),
                         post.getTitle(),
-                        post.getReadCount() != null ? post.getReadCount() : 0
+                        post.getReadCount() != null ? post.getReadCount().longValue() : 0L
                 ))
                 .collect(Collectors.toList());
 
@@ -167,6 +172,8 @@ public class AdminAnalyticsController {
                 totalUsers,
                 todayPV,
                 todayUV,
+                yesterdayPV,
+                yesterdayUV,
                 recentPostsData
         );
 

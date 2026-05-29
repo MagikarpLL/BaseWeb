@@ -4,7 +4,6 @@ import { ElAvatar, ElButton, ElInput, ElForm, ElFormItem, ElMessage } from 'elem
 import { timeAgo } from '@/utils/formatters'
 import { getGravatarUrl } from '@/utils/md5'
 import CaptchaInput from './CaptchaInput.vue'
-import axios from 'axios'
 
 interface Comment {
   id: number
@@ -33,21 +32,8 @@ const newComment = ref({
 const replyingTo = ref<number | null>(null)
 const submitting = ref(false)
 const captchaRef = ref<InstanceType<typeof CaptchaInput> | null>(null)
-const captchaCode = ref('')
 
 const hasComments = computed(() => props.comments.length > 0)
-
-async function generateCaptchaCode() {
-  try {
-    const res = await axios.get('/captcha')
-    if (res.data.data?.code) {
-      captchaCode.value = res.data.data.code
-    }
-  } catch {
-    // Generate fallback code client-side if server fails
-    captchaCode.value = ''
-  }
-}
 
 function formatCommentDate(dateStr: string): string {
   return timeAgo(dateStr)
@@ -85,7 +71,7 @@ function handleSubmit(parentId?: number) {
     author: newComment.value.author,
     email: newComment.value.email || undefined,
     parentId,
-    captcha: captchaCode.value || newComment.value.content // Fallback to content for client-side captcha
+    captcha: 'client-side-captcha' // Client-side captcha, verified locally
   })
 
   newComment.value.content = ''

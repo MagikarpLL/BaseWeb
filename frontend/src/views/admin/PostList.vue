@@ -23,6 +23,7 @@ const selectedStatus = ref('')
 const info = computed(() => ({
   posts: t('admin.posts'),
   newPost: t('common.add'),
+  title: t('admin.title'),
   allStatus: t('admin.allStatus') || 'All Status',
   draft: t('admin.draft'),
   published: t('admin.published'),

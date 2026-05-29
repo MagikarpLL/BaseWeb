@@ -1,14 +1,11 @@
-#Wed May 27 14:03:42 CST 2026
+#Fri May 29 18:09:13 CST 2026
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\PersonalWebsiteApplication.java=1776942110607
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\config\\MyBatisConfig.java=1776941931070
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\config\\SecurityConfig.java=1779859504443
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\config\\WebConfig.java=1776941930435
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\BlogCommentController.java=1779861783773
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\BlogPostController.java=1779852148610
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\SettingsController.java=1779859459777
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\admin\\AdminAPIController.java=1779850296376
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\analytics\\AnalyticsController.java=1776941890732
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\public_\\PublicAPIController.java=1776941872191
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\controller\\public_\\PublicAPIController.java=1780048392391
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\exception\\BadRequestException.java=1776942055084
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\exception\\GlobalExceptionHandler.java=1779852065792
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\exception\\ResourceNotFoundException.java=1776942045005
@@ -29,7 +26,8 @@ F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\request\\RegisterRequest.java=1776941574950
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\request\\TagRequest.java=1776941580020
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\request\\TrackRequest.java=1779786865772
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AnalyticsOverviewDTO.java=1779859094388
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AboutResponse.java=1779934451792
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AnalyticsOverviewDTO.java=1779937390012
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AnalyticsOverviewResponse.java=1779786867163
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AnalyticsPageDTO.java=1779859102989
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\AnalyticsSourceDTO.java=1779859107006
@@ -37,7 +35,8 @@ F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\ApiResponse.java=1776941615083
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\BlogPostResponse.java=1776941605682
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\CategoryResponse.java=1776941608510
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\CommentResponse.java=1779861798733
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\CommentResponse.java=1779937242406
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\HomeResponse.java=1779934450847
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\LoginResponse.java=1776941603549
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\PageStatsResponse.java=1779786870218
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\SourceStatsResponse.java=1779786870970
@@ -45,6 +44,7 @@ F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\dto\\response\\TrendResponse.java=1779786869044
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\BlogPost.java=1779850261579
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\BlogPostTag.java=1776942126320
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\CaptchaCode.java=1779937226292
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\Category.java=1779850305157
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\Comment.java=1779861747839
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\DailyStats.java=1776941548811
@@ -53,10 +53,12 @@ F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\Tag.java=1776941539388
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\UniqueVisitor.java=1776941548340
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\model\\entity\\User.java=1776941521963
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\CustomUserDetailsService.java=1776941982919
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\CustomUserDetails.java=1780021660557
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\CustomUserDetailsService.java=1780048391870
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\JwtAuthenticationFilter.java=1776941984192
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\JwtTokenProvider.java=1776943257467
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\security\\JwtTokenProvider.java=1780021632657
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\BlogPostService.java=1779858873792
+F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\CaptchaService.java=1779937226682
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\CategoryService.java=1776941786056
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\CommentService.java=1779861706956
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\DailyStatsService.java=1776943185657
@@ -69,7 +71,6 @@ F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\CommentServiceImpl.java=1779861719064
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\DailyStatsServiceImpl.java=1776943191589
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\PageViewServiceImpl.java=1779858964607
-F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\SiteSettingsServiceImpl.java=1779858576106
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\TagServiceImpl.java=1776943109816
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\UniqueVisitorServiceImpl.java=1779858946995
 F\:\\Workspace\\VibeCoding\\personal-painpoints\\Base\\backend\\src\\main\\java\\com\\example\\personalwebsite\\service\\impl\\UserServiceImpl.java=1779858912065

@@ -1,6 +1,7 @@
 package com.example.personalwebsite.security;
 
 import com.example.personalwebsite.mapper.UserMapper;
+import com.example.personalwebsite.model.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -48,7 +48,7 @@ function drawDots(ctx: CanvasRenderingContext2D, width: number, height: number) 
   }
 }
 
-function generateCaptcha(code?: string) {
+function generateCaptcha() {
   const canvas = canvasRef.value
   if (!canvas) return
 
@@ -56,7 +56,7 @@ function generateCaptcha(code?: string) {
   if (!ctx) return
 
   // Use provided code or generate new one
-  localCode.value = code || generateCode()
+  localCode.value = generateCode()
   inputValue.value = ''
 
   const width = 120
@@ -104,10 +104,8 @@ defineExpose({
   getCode
 })
 
-watch(() => props.code, (newCode) => {
-  if (newCode) {
-    generateCaptcha(newCode)
-  }
+watch(() => props.code, () => {
+  generateCaptcha()
 }, { immediate: true })
 
 onMounted(() => {

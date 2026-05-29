@@ -85,6 +85,104 @@ description: >
 
 ## 命令
 
+### /harness-state help
+
+显示帮助信息，列出所有可用命令和用法。
+
+**动作：**
+1. 返回技能概述和所有命令列表
+
+**输出示例：**
+```
+# 📖 harness-state 技能帮助
+
+## 技能概述
+状态管理技能，负责 `.harness/state.json` 的读写操作，提供统一的状态读取、写入、更新、消息记录接口。
+
+## 可用命令
+
+### 1. /harness-state help
+显示此帮助信息
+
+### 2. /harness-state get
+读取完整状态文件
+**示例**: `/harness-state get`
+
+### 3. /harness-state init
+初始化状态文件（仅当文件不存在时）
+**示例**: `/harness-state init`
+
+### 4. /harness-state set <field_path> <value>
+设置指定字段的值
+**示例**: `/harness-state set phase implement`
+
+### 5. /harness-state update <json_patch>
+使用 JSON Patch 更新状态
+**示例**: `/harness-state update [{"op":"replace","path":"/phase","value":"spec"}]`
+
+### 6. /harness-state add-message <type> <content>
+添加消息到 messages 数组
+**示例**: `/harness-state add-message I 开始实现任务`
+
+### 7. /harness-state get-phase
+获取当前阶段
+**示例**: `/harness-state get-phase`
+
+### 8. /harness-state get-checkpoint <phase>
+获取指定阶段的 checkpoint
+**示例**: `/harness-state get-checkpoint implement`
+
+### 9. /harness-state set-checkpoint <phase> <json_checkpoint>
+设置指定阶段的 checkpoint
+**示例**: `/harness-state set-checkpoint requirement {"step":"clarify"}`
+
+### 10. /harness-state reset
+重置状态文件
+**示例**: `/harness-state reset`
+
+### 11. /harness-state reset-phase <phase>
+重置指定阶段的状态
+**示例**: `/harness-state reset-phase implement`
+
+### 12. /harness-state add-pending <doc_path>
+添加文档到待处理列表
+**示例**: `/harness-state add-pending docs/requirements/xxx.md`
+
+### 13. /harness-state confirm-doc <doc_path>
+确认文档（从待处理移到已确认）
+**示例**: `/harness-state confirm-doc docs/requirements/xxx.md`
+
+### 14. /harness-state complete-task <task_id>
+标记任务为完成
+**示例**: `/harness-state complete-task M1-09`
+
+### 15. /harness-state fail-task <task_id>
+标记任务为失败
+**示例**: `/harness-state fail-task M1-09`
+
+### 16. /harness-state set-pause-reason <reason>
+设置暂停原因
+**示例**: `/harness-state set-pause-reason auto_failed`
+
+### 17. /harness-state is-valid
+检查状态文件是否有效
+**示例**: `/harness-state is-valid`
+
+## 快速开始
+
+```bash
+# 读取状态
+/harness-state get
+
+# 设置阶段
+/harness-state set phase implement
+```
+```
+
+**用法：** `/harness-state help`
+
+---
+
 ### /harness-state get
 
 读取完整状态文件。
@@ -396,7 +494,7 @@ task(
 - 读取优先：任何状态变更前必须先读取
 - 原子写入：更新后立即写回
 - 时间戳格式：ISO 8601
-- **阶段枚举（已更新）**：`idle`, `requirement`, `spec`, `implement`, `paused`, `completed`（移除了 [verify](file://f:\Workspace\VibeCoding\personal-painpoints\Base\frontend\src\components\blog\CaptchaInput.vue#L89-L93)）
+- **阶段枚举（已更新）**：`idle`, `requirement`, `spec`, `implement`, `paused`, `completed`（移除了 [verify](file://f:\Workspace\VibeCoding\personal-painpoints\Base\frontend\src\components\blog\CaptchaInput.vue#L89-L93））
 - **暂停原因枚举**：`user_requested`, `auto_failed`, `manual_review`
 - `implement` 阶段的 [verify](file://f:\Workspace\VibeCoding\personal-painpoints\Base\frontend\src\components\blog\CaptchaInput.vue#L89-L93) 步骤是内部闭环，不提升为独立阶段
 - **doctor checkpoint**：用于记录诊断结果，不属于 phase 枚举

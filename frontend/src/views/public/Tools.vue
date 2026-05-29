@@ -8,8 +8,10 @@ import Footer from '@/components/common/Footer.vue'
 import ToolCard from '@/components/tools/ToolCard.vue'
 import { publicApi, type Tool } from '@/api'
 import { useSiteStore } from '@/stores/site'
+import { useLocale } from '@/composables/useLocale'
 
 const siteStore = useSiteStore()
+const { t } = useLocale()
 
 // Static tools not from API
 const staticTools: Tool[] = [
@@ -26,7 +28,7 @@ const error = ref<string | null>(null)
 const activeCategory = ref<string>('all')
 
 useHead({
-  title: `Tools - ${siteStore.siteName}`,
+  title: `${t('tools.title')} - ${siteStore.siteName}`,
   meta: [
     { name: 'description', content: 'Free online tools for developers' }
   ]
@@ -68,8 +70,8 @@ onMounted(() => {
     <Header :title="siteStore.siteName" />
     <main class="tools-page">
       <div class="page-header">
-        <h1 class="page-title">Tools</h1>
-        <p class="page-description">Free online tools for developers</p>
+        <h1 class="page-title">{{ t('tools.title') }}</h1>
+        <p class="page-description">{{ t('tools.description') }}</p>
       </div>
 
       <ElSkeleton v-if="loading" :rows="6" animated />
@@ -78,7 +80,7 @@ onMounted(() => {
           <ElTabPane
             v-for="cat in categories"
             :key="cat"
-            :label="cat === 'all' ? 'All' : cat"
+            :label="cat === 'all' ? t('tools.all') : cat"
             :name="cat"
           />
         </ElTabs>
@@ -87,7 +89,7 @@ onMounted(() => {
           <ToolCard v-for="tool in filteredTools" :key="tool.id" :tool="tool" />
         </div>
         <div v-else class="no-tools">
-          <p>No tools found in this category.</p>
+          <p>{{ t('blog.noResults') }}</p>
         </div>
       </template>
     </main>

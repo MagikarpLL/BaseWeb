@@ -16,7 +16,14 @@ interface Post {
 
 const props = defineProps<{
   post: Post
+  highlightKeyword?: string
 }>()
+
+function highlightText(text: string, keyword: string): string {
+  if (!keyword) return text
+  const regex = new RegExp(`(${keyword})`, 'gi')
+  return text.replace(regex, '<mark>$1</mark>')
+}
 
 const formattedDate = computed(() => {
   if (!props.post.publishedAt) return ''
@@ -26,6 +33,14 @@ const formattedDate = computed(() => {
     day: 'numeric'
   })
 })
+
+const highlightedTitle = computed(() => 
+  props.highlightKeyword ? highlightText(props.post.title, props.highlightKeyword) : props.post.title
+)
+
+const highlightedExcerpt = computed(() => 
+  props.highlightKeyword && props.post.excerpt ? highlightText(props.post.excerpt, props.highlightKeyword) : props.post.excerpt
+)
 </script>
 
 <template>
@@ -34,9 +49,9 @@ const formattedDate = computed(() => {
       <div class="post-cover-wrapper">
         <img
           v-if="post.coverImage"
-          :src="post.coverImage"
+          v-lazyload="post.coverImage"
           :alt="post.title"
-          class="post-cover"
+          class="post-cover lazy"
         />
         <div v-else class="post-cover-placeholder">
           <span>{{ post.categoryName?.[0] || 'B' }}</span>
@@ -47,8 +62,8 @@ const formattedDate = computed(() => {
           <span v-if="post.categoryName" class="post-category">{{ post.categoryName }}</span>
           <time v-if="formattedDate" class="post-date">{{ formattedDate }}</time>
         </div>
-        <h3 class="post-title">{{ post.title }}</h3>
-        <p v-if="post.excerpt" class="post-excerpt">{{ post.excerpt }}</p>
+        <h3 class="post-title" v-html="highlightedTitle"></h3>
+        <p v-if="highlightedExcerpt" class="post-excerpt" v-html="highlightedExcerpt"></p>
         <div v-if="post.tags?.length" class="post-tags">
           <span v-for="tag in post.tags.slice(0, 3)" :key="tag.id" class="post-tag">
             {{ tag.name }}
@@ -193,5 +208,12 @@ const formattedDate = computed(() => {
 .view-count {
   color: #999;
   font-size: 12px;
+}
+
+:deep(mark) {
+  background: #fef08a;
+  color: #92400e;
+  padding: 0 2px;
+  border-radius: 2px;
 }
 </style>

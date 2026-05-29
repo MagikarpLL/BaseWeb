@@ -88,47 +88,7 @@ public class SettingsController {
 
     // ==================== Public Site Data ====================
 
-    @GetMapping("/public/home")
-    public ApiResponse<Map<String, Object>> getHomeData() {
-        SiteSettingsDTO settings = siteSettingsService.getSettingsDTO();
-
-        Map<String, Object> homeData = new HashMap<>();
-        homeData.put("siteName", settings.getSiteName());
-        homeData.put("banner", settings.getProfile() != null ? settings.getProfile().getAvatar() : null);
-        homeData.put("bio", settings.getProfile() != null ? settings.getProfile().getBio() : null);
-        homeData.put("avatar", settings.getProfile() != null ? settings.getProfile().getAvatar() : null);
-
-        Map<String, String> socialLinks = new HashMap<>();
-        if (settings.getSocial() != null) {
-            socialLinks.put("github", settings.getSocial().getGithub());
-            socialLinks.put("twitter", settings.getSocial().getTwitter());
-        }
-        homeData.put("socialLinks", socialLinks);
-
-        // Get featured posts (3 latest published)
-        List<BlogPost> featuredPosts = blogPostService.findLatestPosts(3);
-        homeData.put("featured", featuredPosts);
-
-        return ApiResponse.success(homeData);
-    }
-
-    @GetMapping("/public/about")
-    public ApiResponse<Map<String, Object>> getAboutData() {
-        SiteSettingsDTO settings = siteSettingsService.getSettingsDTO();
-
-        Map<String, Object> aboutData = new HashMap<>();
-        if (settings.getProfile() != null) {
-            aboutData.put("avatar", settings.getProfile().getAvatar());
-            aboutData.put("bio", settings.getProfile().getBio());
-        }
-        if (settings.getAbout() != null) {
-            aboutData.put("skills", settings.getAbout().getSkills());
-            aboutData.put("experiences", settings.getAbout().getTimeline());
-            aboutData.put("projects", settings.getAbout().getProjects());
-        }
-
-        return ApiResponse.success(aboutData);
-    }
+    // Note: /public/home and /public/about are handled by PublicAPIController
 
     // ==================== SEO Endpoints ====================
 

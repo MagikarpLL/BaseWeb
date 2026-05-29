@@ -10,20 +10,18 @@ import Header from '@/components/common/Header.vue'
 import Footer from '@/components/common/Footer.vue'
 import CommentList from '@/components/blog/CommentList.vue'
 import PostCard from '@/components/blog/PostCard.vue'
+import ShareBar from '@/components/blog/ShareBar.vue'
 import { blogApi, type Post, type Comment, type CommentFormData } from '@/api'
 import { formatDate } from '@/utils/formatters'
 import { useSiteStore } from '@/stores/site'
+import { useLocale } from '@/composables/useLocale'
 import { useBlogPostSchema, useBreadcrumbSchema } from '@/composables/useSeo'
 
-// Configure marked to use highlight.js
-marked.setOptions({
-  breaks: true,
-  gfm: true
-})
+const siteStore = useSiteStore()
+const { t } = useLocale()
 
 const route = useRoute()
 const router = useRouter()
-const siteStore = useSiteStore()
 
 const post = ref<Post | null>(null)
 const comments = ref<Comment[]>([])
@@ -60,6 +58,9 @@ renderer.code = function({ text, lang }: { text: string; lang?: string }) {
   const highlighted = hljs.highlight(text, { language }).value
   return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`
 }
+renderer.image = function({ href, text, tokens: _tokens }: { href: string; title: string | null; text: string; tokens: unknown }) {
+  return `<img v-lazyload="${href}" class="lazy" alt="${text}" />`
+}
 
 marked.use({ renderer })
 
@@ -92,14 +93,18 @@ useHead(() => ({
   title: () => post.value ? `${post.value.title} - ${siteStore.siteName}` : 'Loading...',
   meta: () => post.value ? [
     { name: 'description', content: post.value.excerpt || '' },
+    { property: 'og:url', content: currentUrl.value },
     { property: 'og:title', content: post.value.title },
     { property: 'og:description', content: post.value.excerpt || '' },
     { property: 'og:image', content: post.value.coverImage || '' },
     { property: 'og:type', content: 'article' },
     { property: 'og:published_time', content: post.value.publishedAt || post.value.createdAt },
     { property: 'og:modified_time', content: post.value.updatedAt },
+    { property: 'article:section', content: post.value.categoryName || '' },
+    { property: 'article:tag', content: post.value.tags?.map((t: { name: string }) => t.name).join(',') || '' },
     { property: 'article:author', content: siteStore.settings.profile.name || 'Anonymous' },
     { name: 'twitter:card', content: post.value.coverImage ? 'summary_large_image' : 'summary' },
+    { name: 'twitter:site', content: '@yourTwitterHandle' },
     { name: 'twitter:title', content: post.value.title },
     { name: 'twitter:description', content: post.value.excerpt || '' },
     { name: 'twitter:image', content: post.value.coverImage || '' }
@@ -140,25 +145,11 @@ async function fetchComments() {
 }
 
 async function fetchRelatedPosts() {
-  if (!post.value?.categoryId) return
+  if (!post.value?.slug) return
   try {
-    const res = await blogApi.getPosts({
-      category: String(post.value.categoryId),
-      status: 'published',
-      sort: 'publishedAt,desc'
-    })
-    // Backend returns { posts: [], pagination: {...}, filters: {...} }
-    const data = res.data.data
-    const allPosts = data.posts || []
-    // Filter out current post and limit to 3
-    relatedPosts.value = allPosts.filter((p: Post) => p.id !== post.value?.id).slice(0, 3)
-
-    // Find prev/next based on publishedAt
-    const currentIndex = allPosts.findIndex((p: Post) => p.id === post.value?.id)
-    prevNext.value = {
-      prev: currentIndex > 0 ? allPosts[currentIndex - 1] : null,
-      next: currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
-    }
+    const res = await blogApi.getRelatedPosts(post.value.slug)
+    relatedPosts.value = res.data.data || []
+    prevNext.value = { prev: null, next: null }
   } catch {
     relatedPosts.value = []
     prevNext.value = { prev: null, next: null }
@@ -294,6 +285,14 @@ watch(renderedContent, async () => {
 
 <template>
   <DefaultLayout>
+    <!-- Share Bar -->
+    <ShareBar
+      v-if="post"
+      :title="post.title"
+      :excerpt="post.excerpt"
+      :url="currentUrl"
+    />
+
     <!-- Reading Progress Bar -->
     <div class="reading-progress-bar">
       <div class="reading-progress-fill" :style="{ width: `${readingProgress}%` }" />
@@ -305,10 +304,10 @@ watch(renderedContent, async () => {
       <nav v-if="post" class="breadcrumb-nav" aria-label="Breadcrumb">
         <ol class="breadcrumb-list">
           <li class="breadcrumb-item">
-            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/">{{ t('nav.home') }}</RouterLink>
           </li>
           <li class="breadcrumb-item">
-            <RouterLink to="/blog">Blog</RouterLink>
+            <RouterLink to="/blog">{{ t('nav.blog') }}</RouterLink>
           </li>
           <li v-if="post.categoryName" class="breadcrumb-item">
             <RouterLink :to="`/blog?category=${post.categoryId}`">{{ post.categoryName }}</RouterLink>
@@ -321,7 +320,7 @@ watch(renderedContent, async () => {
       <template v-else-if="error">
         <div class="error-state">
           <h2>{{ error }}</h2>
-          <ElButton @click="goBack">Go Back</ElButton>
+          <ElButton @click="goBack">{{ t('common.back') }}</ElButton>
         </div>
       </template>
       <template v-else-if="post">
@@ -339,7 +338,7 @@ watch(renderedContent, async () => {
                   <ElTag type="primary" size="small">{{ post.categoryName }}</ElTag>
                 </span>
                 <span class="date">{{ formatDate(post.publishedAt || post.createdAt) }}</span>
-                <span class="reading-time">{{ readingTime }} min read</span>
+                <span class="reading-time">{{ readingTime }} {{ t('blogDetail.minRead') }}</span>
               </div>
               <h1 class="article-title">{{ post.title }}</h1>
               <div v-if="post.tags?.length" class="tags">
@@ -355,7 +354,7 @@ watch(renderedContent, async () => {
             <!-- Article Footer -->
             <footer class="article-footer">
               <div class="share-section">
-                <span class="share-label">Share:</span>
+                <span class="share-label">{{ t('blogDetail.share') }}:</span>
                 <a
                   :href="getShareUrl()"
                   target="_blank"
@@ -379,7 +378,7 @@ watch(renderedContent, async () => {
           <!-- Table of Contents Sidebar -->
           <aside v-if="tocList.length > 0" class="toc-sidebar">
             <div class="toc-container">
-              <h4 class="toc-title">Table of Contents</h4>
+              <h4 class="toc-title">{{ t('blogDetail.tableOfContents') }}</h4>
               <nav class="toc-nav">
                 <ul class="toc-list">
                   <li
@@ -399,7 +398,7 @@ watch(renderedContent, async () => {
 
         <!-- Related Posts Section -->
         <section v-if="relatedPosts.length > 0" class="related-posts">
-          <h3 class="related-title">Related Posts</h3>
+          <h3 class="related-title">{{ t('blogDetail.relatedPosts') }}</h3>
           <div class="related-grid">
             <PostCard v-for="relatedPost in relatedPosts" :key="relatedPost.id" :post="relatedPost" />
           </div>
@@ -409,12 +408,12 @@ watch(renderedContent, async () => {
         <nav class="article-nav">
           <div class="prev-next-nav">
             <RouterLink v-if="prevNext.prev" :to="`/blog/${prevNext.prev.slug}`" class="prev-link">
-              <span class="nav-label">← Previous</span>
+              <span class="nav-label">{{ t('blogDetail.previous') }}</span>
               <span class="nav-title">{{ prevNext.prev.title }}</span>
             </RouterLink>
             <span v-else />
             <RouterLink v-if="prevNext.next" :to="`/blog/${prevNext.next.slug}`" class="next-link">
-              <span class="nav-label">Next →</span>
+              <span class="nav-label">{{ t('blogDetail.next') }}</span>
               <span class="nav-title">{{ prevNext.next.title }}</span>
             </RouterLink>
           </div>

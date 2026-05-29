@@ -11,9 +11,11 @@ import ToolCard from '@/components/tools/ToolCard.vue'
 import { publicApi, type HomeData } from '@/api'
 import { useSiteStore } from '@/stores/site'
 import { useWebsiteSchema } from '@/composables/useSeo'
+import { useLocale } from '@/composables/useLocale'
 
 const router = useRouter()
 const siteStore = useSiteStore()
+const { t } = useLocale()
 
 const homeData = ref<HomeData | null>(null)
 const loading = ref(true)
@@ -23,7 +25,7 @@ const error = ref<string | null>(null)
 const websiteSchema = useWebsiteSchema()
 
 useHead(() => ({
-  title: `Home - ${siteStore.siteName}`,
+  title: `${siteStore.siteName}`,
   meta: [
     { name: 'description', content: siteStore.siteDescription || 'Personal blog and tools' }
   ],
@@ -88,8 +90,8 @@ onMounted(() => {
             <p class="hero-title">{{ homeData.profile.title }}</p>
             <p class="hero-bio">{{ homeData.profile.bio }}</p>
             <div class="hero-actions">
-              <ElButton type="primary" size="large" @click="goToBlog">Read Blog</ElButton>
-              <ElButton size="large" @click="goToTools">Explore Tools</ElButton>
+              <ElButton type="primary" size="large" @click="goToBlog">{{ t('home.readBlog') }}</ElButton>
+              <ElButton size="large" @click="goToTools">{{ t('home.exploreTools') }}</ElButton>
             </div>
           </div>
         </template>
@@ -99,8 +101,8 @@ onMounted(() => {
       <!-- Latest Posts Section -->
       <section v-if="homeData?.latestPosts?.length" class="section">
         <div class="section-header">
-          <h2 class="section-title">Latest Posts</h2>
-          <RouterLink to="/blog" class="view-all">View All →</RouterLink>
+          <h2 class="section-title">{{ t('home.latestPosts') }}</h2>
+          <RouterLink to="/blog" class="view-all">{{ t('home.viewAll') }}</RouterLink>
         </div>
         <div class="posts-grid">
           <PostCard v-for="post in homeData.latestPosts.slice(0, 3)" :key="post.id" :post="post" />
@@ -110,8 +112,8 @@ onMounted(() => {
       <!-- Featured Tools Section -->
       <section v-if="homeData?.featuredTools?.length" class="section">
         <div class="section-header">
-          <h2 class="section-title">Featured Tools</h2>
-          <RouterLink to="/tools" class="view-all">View All →</RouterLink>
+          <h2 class="section-title">{{ t('home.featuredTools') }}</h2>
+          <RouterLink to="/tools" class="view-all">{{ t('home.viewAll') }}</RouterLink>
         </div>
         <div class="tools-grid">
           <ToolCard v-for="tool in homeData.featuredTools.slice(0, 3)" :key="tool.id" :tool="tool" />

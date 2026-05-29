@@ -6,6 +6,7 @@ import com.example.personalwebsite.mapper.BlogPostMapper;
 import com.example.personalwebsite.mapper.TagMapper;
 import com.example.personalwebsite.model.entity.BlogPost;
 import com.example.personalwebsite.service.BlogPostService;
+import com.example.personalwebsite.service.PostHistoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,12 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostMapper blogPostMapper;
     private final TagMapper tagMapper;
+    private final PostHistoryService postHistoryService;
 
-    public BlogPostServiceImpl(BlogPostMapper blogPostMapper, TagMapper tagMapper) {
+    public BlogPostServiceImpl(BlogPostMapper blogPostMapper, TagMapper tagMapper, PostHistoryService postHistoryService) {
         this.blogPostMapper = blogPostMapper;
         this.tagMapper = tagMapper;
+        this.postHistoryService = postHistoryService;
     }
 
     @Override
@@ -83,6 +86,12 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<BlogPost> findRelatedPostsWithScoring(Long categoryId, Long excludeId, Integer limit, List<Long> tagIds) {
+        return blogPostMapper.findRelatedPostsWithScoring(categoryId, excludeId, limit, tagIds);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<BlogPost> findPopularPosts(Integer limit) {
         return blogPostMapper.findPopularPosts(limit);
     }
@@ -100,6 +109,18 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<BlogPost> searchPostsPaginated(String keyword, int limit, int offset) {
+        return blogPostMapper.searchPostsPaginated(keyword, limit, offset);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long countSearchResults(String keyword) {
+        return blogPostMapper.countSearchResults(keyword);
+    }
+
+    @Override
     @Transactional
     public void incrementReadCount(Long id) {
         blogPostMapper.incrementReadCount(id);
@@ -112,6 +133,10 @@ public class BlogPostServiceImpl implements BlogPostService {
         post.setStatus("published");
         post.setPublishedAt(LocalDateTime.now());
         blogPostMapper.updateStatus(id, "published", post.getPublishedAt());
+
+        // Save history snapshot on publish
+        postHistoryService.saveHistory(id, post.getAuthorId());
+
         log.info("Published blog post: {} (id: {})", post.getTitle(), id);
     }
 

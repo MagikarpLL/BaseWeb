@@ -2,21 +2,24 @@
 import { computed } from 'vue'
 import { RouterView, useRouter, useRoute } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useLocale } from '@/composables/useLocale'
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
 import { ElMenu, ElMenuItem, ElContainer, ElHeader, ElMain, ElAvatar, ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
 
 const router = useRouter()
 const route = useRoute()
 const { logout, user } = useAuth()
+const { t } = useLocale()
 
-const menuItems = [
-  { path: '/admin', label: 'Dashboard', icon: '📊' },
-  { path: '/admin/posts', label: 'Posts', icon: '📝' },
-  { path: '/admin/categories', label: 'Categories', icon: '📁' },
-  { path: '/admin/tags', label: 'Tags', icon: '🏷️' },
-  { path: '/admin/comments', label: 'Comments', icon: '💬' },
-  { path: '/admin/analytics', label: 'Analytics', icon: '📈' },
-  { path: '/admin/settings', label: 'Settings', icon: '⚙️' }
-]
+const menuItems = computed(() => [
+  { path: '/admin', label: t('admin.dashboard'), icon: '📊' },
+  { path: '/admin/posts', label: t('admin.posts'), icon: '📝' },
+  { path: '/admin/categories', label: t('admin.categories'), icon: '📁' },
+  { path: '/admin/tags', label: t('admin.tags'), icon: '🏷️' },
+  { path: '/admin/comments', label: t('admin.comments'), icon: '💬' },
+  { path: '/admin/analytics', label: t('admin.analytics'), icon: '📈' },
+  { path: '/admin/settings', label: t('admin.settings'), icon: '⚙️' }
+])
 
 const activeMenu = computed(() => route.path)
 
@@ -33,10 +36,11 @@ function handleMenuSelect(path: string) {
   <ElContainer class="admin-layout">
     <ElHeader class="admin-header">
       <div class="header-left">
-        <span class="logo">Admin Panel</span>
+        <span class="logo">{{ t('admin.dashboard') }}</span>
       </div>
       <div class="header-right">
-        <RouterLink to="/" class="view-site-btn">View Site</RouterLink>
+        <RouterLink to="/" class="view-site-btn">{{ t('home.viewAll').replace(' →', '') }}</RouterLink>
+        <LanguageSwitch />
         <ElDropdown @command="handleLogout">
           <span class="user-info">
             <ElAvatar :size="32" style="background-color: #409eff">
@@ -46,7 +50,7 @@ function handleMenuSelect(path: string) {
           </span>
           <template #dropdown>
             <ElDropdownMenu>
-              <ElDropdownItem command="logout">Logout</ElDropdownItem>
+              <ElDropdownItem command="logout">{{ t('nav.logout') }}</ElDropdownItem>
             </ElDropdownMenu>
           </template>
         </ElDropdown>

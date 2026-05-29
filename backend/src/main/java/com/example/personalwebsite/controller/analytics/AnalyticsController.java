@@ -125,16 +125,16 @@ public class AnalyticsController {
                 .collect(Collectors.toMap(DailyStats::getDate, s -> s));
         
         List<String> dates = new ArrayList<>();
-        List<Integer> pv = new ArrayList<>();
-        List<Integer> uv = new ArrayList<>();
-        
+        List<Long> pv = new ArrayList<>();
+        List<Long> uv = new ArrayList<>();
+
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             dates.add(date.toString());
             DailyStats stat = statsMap.get(date);
             pv.add(stat != null && stat.getTotalPv() != null ? stat.getTotalPv().longValue() : 0L);
             uv.add(stat != null && stat.getTotalUv() != null ? stat.getTotalUv().longValue() : 0L);
         }
-        
+
         AnalyticsTrendDTO dto = new AnalyticsTrendDTO();
         dto.setDates(dates);
         dto.setPv(pv);
@@ -209,10 +209,10 @@ public class AnalyticsController {
         try {
             java.net.URL url = new java.net.URL(referrer);
             String host = url.getHost();
-            if (host.contains("google")) return "Google";
-            if (host.contains("bing")) return "Bing";
-            if (host.contains("baidu")) return "Baidu";
-            if (host.contains("duckduckgo")) return "DuckDuckGo";
+            if (host.contains("google")) { return "Google"; }
+            if (host.contains("bing")) { return "Bing"; }
+            if (host.contains("baidu")) { return "Baidu"; }
+            if (host.contains("duckduckgo")) { return "DuckDuckGo"; }
             return "Other";
         } catch (Exception e) {
             return "Other";

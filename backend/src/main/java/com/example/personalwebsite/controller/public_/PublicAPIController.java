@@ -144,9 +144,41 @@ public class PublicAPIController {
         // Build about content from site settings
         AboutResponse.AboutContent about = new AboutResponse.AboutContent();
         if (settings.getAbout() != null) {
-            about.setSkills(settings.getAbout().getSkills());
-            about.setTimeline(settings.getAbout().getTimeline());
-            about.setProjects(settings.getAbout().getProjects());
+            // Convert SiteSettingsDTO nested types to AboutResponse nested types
+            List<AboutResponse.Skill> skills = new ArrayList<>();
+            if (settings.getAbout().getSkills() != null) {
+                for (SiteSettingsDTO.Skill skill : settings.getAbout().getSkills()) {
+                    AboutResponse.Skill s = new AboutResponse.Skill();
+                    s.setName(skill.getName());
+                    s.setLevel(skill.getLevel());
+                    skills.add(s);
+                }
+            }
+            List<AboutResponse.TimelineItem> timeline = new ArrayList<>();
+            if (settings.getAbout().getTimeline() != null) {
+                for (SiteSettingsDTO.TimelineItem item : settings.getAbout().getTimeline()) {
+                    AboutResponse.TimelineItem t = new AboutResponse.TimelineItem();
+                    t.setDate(item.getDate());
+                    t.setTitle(item.getTitle());
+                    t.setDescription(item.getDescription());
+                    t.setType(item.getType());
+                    timeline.add(t);
+                }
+            }
+            List<AboutResponse.Project> projects = new ArrayList<>();
+            if (settings.getAbout().getProjects() != null) {
+                for (SiteSettingsDTO.Project project : settings.getAbout().getProjects()) {
+                    AboutResponse.Project p = new AboutResponse.Project();
+                    p.setName(project.getName());
+                    p.setDescription(project.getDescription());
+                    p.setUrl(project.getUrl());
+                    p.setTechs(project.getTechs());
+                    projects.add(p);
+                }
+            }
+            about.setSkills(skills);
+            about.setTimeline(timeline);
+            about.setProjects(projects);
         } else {
             about.setSkills(new ArrayList<>());
             about.setTimeline(new ArrayList<>());

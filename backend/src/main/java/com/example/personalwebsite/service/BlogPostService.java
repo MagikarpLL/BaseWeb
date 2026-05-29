@@ -12,9 +12,12 @@ public interface BlogPostService {
     List<BlogPost> findByCategoryId(Long categoryId);
     List<BlogPost> findLatestPosts(Integer limit);
     List<BlogPost> findRelatedPosts(Long categoryId, Long excludeId, Integer limit);
+    List<BlogPost> findRelatedPostsWithScoring(Long categoryId, Long excludeId, Integer limit, List<Long> tagIds);
     List<BlogPost> findPopularPosts(Integer limit);
     List<BlogPost> findByTagId(Long tagId);
     List<BlogPost> findPublishedPostsPaginated(int limit, int offset, String sort);
+    List<BlogPost> searchPostsPaginated(String keyword, int limit, int offset);
+    long countSearchResults(String keyword);
     void incrementReadCount(Long id);
     BlogPost create(BlogPost blogPost);
     BlogPost update(BlogPost blogPost);

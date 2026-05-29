@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElCard, ElRow, ElCol, ElStatistic, ElSkeleton } from 'element-plus'
 import { analyticsApi, type AnalyticsOverview } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const router = useRouter()
 

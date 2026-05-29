@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { useLocale } from '@/composables/useLocale'
 import { ElAvatar, ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
+import LanguageSwitch from '@/components/LanguageSwitch.vue'
 
 defineProps<{
   title: string
 }>()
 
 const { isAuthenticated, user, logout } = useAuth()
+const { t } = useLocale()
 const route = useRoute()
 
 const navLinks = [
-  { path: '/', label: 'Home' },
-  { path: '/blog', label: 'Blog' },
-  { path: '/tools', label: 'Tools' },
-  { path: '/about', label: 'About' }
+  { path: '/', labelKey: 'nav.home' },
+  { path: '/blog', labelKey: 'nav.blog' },
+  { path: '/tools', labelKey: 'nav.tools' },
+  { path: '/about', labelKey: 'nav.about' }
 ]
 
 const isActive = (path: string) => route.path === path
@@ -36,10 +39,11 @@ function handleLogout() {
           class="nav-link"
           :class="{ active: isActive(link.path) }"
         >
-          {{ link.label }}
+          {{ t(link.labelKey) }}
         </RouterLink>
       </nav>
       <div class="header-actions">
+        <LanguageSwitch />
         <template v-if="isAuthenticated">
           <ElDropdown @command="handleLogout">
             <span class="user-dropdown">
@@ -50,15 +54,15 @@ function handleLogout() {
             <template #dropdown>
               <ElDropdownMenu>
                 <ElDropdownItem command="dashboard">
-                  <RouterLink to="/admin">Dashboard</RouterLink>
+                  <RouterLink to="/admin">{{ t('nav.dashboard') }}</RouterLink>
                 </ElDropdownItem>
-                <ElDropdownItem command="logout">Logout</ElDropdownItem>
+                <ElDropdownItem command="logout">{{ t('nav.logout') }}</ElDropdownItem>
               </ElDropdownMenu>
             </template>
           </ElDropdown>
         </template>
         <template v-else>
-          <RouterLink to="/login" class="login-link">Login</RouterLink>
+          <RouterLink to="/login" class="login-link">{{ t('nav.login') }}</RouterLink>
         </template>
       </div>
     </div>
@@ -113,6 +117,7 @@ function handleLogout() {
 .header-actions {
   display: flex;
   align-items: center;
+  gap: 16px;
 }
 
 .user-dropdown {

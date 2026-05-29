@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useSiteStore } from '@/stores/site'
+import { useLocale } from '@/composables/useLocale'
 
 const siteStore = useSiteStore()
+const { t } = useLocale()
 const currentYear = new Date().getFullYear()
 </script>
 
@@ -9,11 +11,11 @@ const currentYear = new Date().getFullYear()
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-info">
-        <p>&copy; {{ currentYear }} {{ siteStore.siteName }}. All rights reserved.</p>
+        <p>&copy; {{ currentYear }} {{ siteStore.siteName }}. {{ t('footer.allRightsReserved') }}</p>
       </div>
       <div class="footer-links">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="mailto:contact@example.com">Contact</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">{{ t('footer.github') }}</a>
+        <a href="mailto:contact@example.com">{{ t('footer.contact') }}</a>
       </div>
     </div>
   </footer>

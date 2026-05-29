@@ -7,15 +7,17 @@ import Header from '@/components/common/Header.vue'
 import Footer from '@/components/common/Footer.vue'
 import { publicApi, type AboutData } from '@/api'
 import { useSiteStore } from '@/stores/site'
+import { useLocale } from '@/composables/useLocale'
 
 const siteStore = useSiteStore()
+const { t } = useLocale()
 
 const aboutData = ref<AboutData | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
 useHead({
-  title: `About - ${siteStore.siteName}`,
+  title: `${siteStore.siteName}`,
   meta: [
     { name: 'description', content: aboutData.value?.profile?.bio || siteStore.siteDescription || 'About me' }
   ]
@@ -80,7 +82,7 @@ onMounted(() => {
 
         <!-- Skills Section -->
         <section v-if="skills.length" class="section">
-          <h2 class="section-title">Skills</h2>
+          <h2 class="section-title">{{ t('about.skills') }}</h2>
           <div class="skills-grid">
             <div v-for="skill in skills" :key="skill.name" class="skill-item">
               <div class="skill-header">
@@ -99,7 +101,7 @@ onMounted(() => {
 
         <!-- Timeline Section -->
         <section v-if="timeline.length" class="section">
-          <h2 class="section-title">Experience</h2>
+          <h2 class="section-title">{{ t('about.experience') }}</h2>
           <div class="timeline-container">
             <ElTimeline>
               <ElTimelineItem
@@ -120,7 +122,7 @@ onMounted(() => {
 
         <!-- Projects Section -->
         <section v-if="projects.length" class="section">
-          <h2 class="section-title">Projects</h2>
+          <h2 class="section-title">{{ t('about.projects') }}</h2>
           <div class="projects-grid">
             <ElCard
               v-for="project in projects"
@@ -142,7 +144,7 @@ onMounted(() => {
                 rel="noopener noreferrer"
                 class="project-link"
               >
-                View Project →
+                {{ t('about.viewProject') }}
               </a>
             </ElCard>
           </div>

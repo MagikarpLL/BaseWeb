@@ -109,6 +109,46 @@ public class BlogPostController {
     }
 
     /**
+     * 获取相关文章（使用多维度评分算法）
+     * GET /api/blog/posts/{slug}/related
+     */
+    @GetMapping("/posts/{slug}/related")
+    public ApiResponse<List<BlogPost>> getRelatedPosts(@PathVariable String slug) {
+        BlogPost post = blogPostService.findBySlug(slug);
+        List<Long> tagIds = post.getTagIds() != null ? post.getTagIds() : List.of();
+        List<BlogPost> relatedPosts = blogPostService.findRelatedPostsWithScoring(
+                post.getCategoryId(), post.getId(), 3, tagIds);
+        return ApiResponse.success(relatedPosts);
+    }
+
+    /**
+     * 搜索文章（公开API）
+     * GET /api/blog/search?q={keyword}&page=1&size=10
+     */
+    @GetMapping("/search")
+    public ApiResponse<Map<String, Object>> searchPosts(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        int offset = (page - 1) * size;
+        List<BlogPost> posts = blogPostService.searchPostsPaginated(q, size, offset);
+        long total = blogPostService.countSearchResults(q);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("posts", posts);
+        data.put("keyword", q);
+        data.put("pagination", Map.of(
+                "page", page,
+                "size", size,
+                "total", total,
+                "totalPages", (int) Math.ceil((double) total / size)
+        ));
+
+        return ApiResponse.success(data);
+    }
+
+    /**
      * 获取公开标签列表
      * GET /api/blog/tags
      */

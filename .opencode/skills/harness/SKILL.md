@@ -75,6 +75,95 @@ description: >
 
 > 所有命令执行前应通过 `harness-state` 技能读取状态，完成后应通过 `harness-state` 技能写回状态。
 
+### /harness help
+
+显示帮助信息，列出所有可用命令和用法。
+
+**动作：**
+1. 返回技能概述和所有命令列表
+
+**输出示例：**
+```
+# 📖 harness 主技能帮助
+
+## 技能概述
+工程流程调度器，负责协调需求、规格、实现三个阶段的循环工作，并提供状态诊断与修复能力。
+
+## 可用命令
+
+### 1. /harness help
+显示此帮助信息
+
+### 2. /harness status
+获取当前工程状态
+**示例**: `/harness status`
+
+### 3. /harness start <phase>
+开始指定阶段的工作（requirement/spec/implement）
+**示例**: `/harness start requirement`
+
+### 4. /harness pause <reason>
+暂停当前工作
+**示例**: `/harness pause Token 用量接近上限`
+
+### 5. /harness resume
+从暂停点恢复
+**示例**: `/harness resume`
+
+### 6. /harness advance
+推进到下一阶段
+**示例**: `/harness advance`
+
+### 7. /harness goto <phase>
+跳转到指定阶段（用于手动控制）
+**示例**: `/harness goto spec`
+
+### 8. /harness reset
+重置整个工程状态
+**示例**: `/harness reset`
+
+### 9. /harness set-iteration <iteration>
+设置当前迭代
+**示例**: `/harness set-iteration M1`
+
+### 10. /harness list-tasks
+列出当前迭代的任务
+**示例**: `/harness list-tasks`
+
+### 11. /harness show-checkpoint
+显示当前检查点信息
+**示例**: `/harness show-checkpoint`
+
+### 12. /harness log <count>
+查看最近的工程日志
+**示例**: `/harness log 20`
+
+### 13. /harness doctor
+执行状态诊断与修复
+**示例**: `/harness doctor`
+
+### 14. /harness doctor-fix
+自动修复状态问题
+**示例**: `/harness doctor-fix`
+
+## 快速开始
+
+```bash
+# 查看状态
+/harness status
+
+# 开始需求阶段
+/harness start requirement
+
+# 执行诊断
+/harness doctor
+```
+```
+
+**用法：** `/harness help`
+
+---
+
 ### /harness status
 
 获取当前工程状态。
