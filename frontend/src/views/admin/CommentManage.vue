@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { ElTable, ElTableColumn, ElButton, ElTag, ElSelect, ElOption, ElPagination, ElMessage, ElMessageBox } from 'element-plus'
 import { adminCommentApi, type AdminComment } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const comments = ref<AdminComment[]>([])
 const loading = ref(false)
@@ -11,12 +14,34 @@ const pageSize = ref(10)
 
 const selectedStatus = ref('')
 
-const statusOptions = [
-  { value: '', label: 'All Status' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'approved', label: 'Approved' },
-  { value: 'rejected', label: 'Rejected' }
-]
+// Translations
+const info = computed(() => ({
+  comments: t('admin.comments'),
+  allStatus: t('admin.allStatus') || 'All Status',
+  pending: t('admin.pending'),
+  approved: t('admin.approved'),
+  rejected: t('admin.rejected'),
+  author: t('admin.user') || 'Author',
+  content: t('admin.content'),
+  post: t('admin.post'),
+  status: t('admin.status'),
+  date: t('admin.submittedAt') || 'Date',
+  actions: t('admin.actions'),
+  approve: t('admin.approve'),
+  reject: t('admin.reject'),
+  delete: t('admin.delete'),
+  deleteConfirm: t('admin.confirmDelete'),
+  commentApproved: t('admin.commentApproved') || 'Comment approved',
+  commentRejected: t('admin.commentRejected') || 'Comment rejected',
+  commentDeleted: t('admin.commentDeleted') || 'Comment deleted successfully'
+}))
+
+const statusOptions = computed(() => [
+  { value: '', label: info.value.allStatus },
+  { value: 'pending', label: info.value.pending },
+  { value: 'approved', label: info.value.approved },
+  { value: 'rejected', label: info.value.rejected }
+])
 
 async function fetchComments() {
   loading.value = true
@@ -49,7 +74,7 @@ function handleStatusFilter() {
 async function approveComment(id: number) {
   try {
     await adminCommentApi.updateStatus(id, 'approved')
-    ElMessage.success('Comment approved')
+    ElMessage.success(info.value.commentApproved)
     fetchComments()
   } catch {
     // Error handled by API interceptor
@@ -59,7 +84,7 @@ async function approveComment(id: number) {
 async function rejectComment(id: number) {
   try {
     await adminCommentApi.updateStatus(id, 'rejected')
-    ElMessage.success('Comment rejected')
+    ElMessage.success(info.value.commentRejected)
     fetchComments()
   } catch {
     // Error handled by API interceptor
@@ -69,16 +94,16 @@ async function rejectComment(id: number) {
 async function deleteComment(id: number, author: string) {
   try {
     await ElMessageBox.confirm(
-      `Are you sure you want to delete the comment by "${author}"?`,
-      'Delete Comment',
+      `"${author}"?`,
+      info.value.delete,
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: info.value.delete,
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
     await adminCommentApi.deleteComment(id)
-    ElMessage.success('Comment deleted successfully')
+    ElMessage.success(info.value.commentDeleted)
     fetchComments()
   } catch {
     // User cancelled
@@ -113,13 +138,13 @@ onMounted(() => {
 <template>
   <div class="comment-manage">
     <div class="header">
-      <h1 class="page-title">Comments</h1>
+      <h1 class="page-title">{{ info.comments }}</h1>
     </div>
 
     <div class="filters">
       <ElSelect
         v-model="selectedStatus"
-        placeholder="Status"
+        :placeholder="info.status"
         clearable
         class="filter-select"
         @change="handleStatusFilter"
@@ -135,7 +160,7 @@ onMounted(() => {
 
     <ElTable :data="comments" v-loading="loading" stripe class="comments-table">
       <ElTableColumn prop="id" label="ID" width="80" />
-      <ElTableColumn prop="author" label="Author" width="120">
+      <ElTableColumn prop="author" :label="info.author" width="120">
         <template #default="{ row }">
           <div class="author-cell">
             <span class="author-name">{{ row.author }}</span>
@@ -143,37 +168,37 @@ onMounted(() => {
           </div>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="content" label="Content" min-width="250">
+      <ElTableColumn prop="content" :label="info.content" min-width="250">
         <template #default="{ row }">
           <div class="content-cell">
             <p class="comment-content">{{ row.content }}</p>
           </div>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="postTitle" label="Post" min-width="150">
+      <ElTableColumn prop="postTitle" :label="info.post" min-width="150">
         <template #default="{ row }">
           <span class="post-title">{{ row.postTitle }}</span>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="status" label="Status" width="100">
+      <ElTableColumn prop="status" :label="info.status" width="100">
         <template #default="{ row }">
           <ElTag :type="getStatusType(row.status)" size="small">
             {{ row.status }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="createdAt" label="Date" width="160">
+      <ElTableColumn prop="createdAt" :label="info.date" width="160">
         <template #default="{ row }">
           {{ formatDate(row.createdAt) }}
         </template>
       </ElTableColumn>
-      <ElTableColumn label="Actions" width="200" fixed="right">
+      <ElTableColumn :label="info.actions" width="200" fixed="right">
         <template #default="{ row }">
           <template v-if="row.status === 'pending'">
-            <ElButton size="small" type="success" @click="approveComment(row.id)">Approve</ElButton>
-            <ElButton size="small" type="warning" @click="rejectComment(row.id)">Reject</ElButton>
+            <ElButton size="small" type="success" @click="approveComment(row.id)">{{ info.approve }}</ElButton>
+            <ElButton size="small" type="warning" @click="rejectComment(row.id)">{{ info.reject }}</ElButton>
           </template>
-          <ElButton size="small" type="danger" @click="deleteComment(row.id, row.author)">Delete</ElButton>
+          <ElButton size="small" type="danger" @click="deleteComment(row.id, row.author)">{{ info.delete }}</ElButton>
         </template>
       </ElTableColumn>
     </ElTable>

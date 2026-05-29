@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElTable, ElTableColumn, ElButton, ElTag, ElSelect, ElOption, ElPagination, ElMessage, ElMessageBox } from 'element-plus'
 import { adminPostApi, categoryApi, type Post, type Category } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const router = useRouter()
 
@@ -16,11 +19,31 @@ const pageSize = ref(10)
 const selectedCategory = ref('')
 const selectedStatus = ref('')
 
-const statusOptions = [
-  { value: '', label: 'All Status' },
-  { value: 'draft', label: 'Draft' },
-  { value: 'published', label: 'Published' }
-]
+// Translations
+const info = computed(() => ({
+  posts: t('admin.posts'),
+  newPost: t('common.add'),
+  allStatus: t('admin.allStatus') || 'All Status',
+  draft: t('admin.draft'),
+  published: t('admin.published'),
+  category: t('admin.category'),
+  status: t('admin.status'),
+  views: t('admin.views') || 'Views',
+  comments: t('admin.comments'),
+  created: t('admin.createdAt'),
+  actions: t('admin.actions'),
+  edit: t('admin.edit'),
+  delete: t('admin.delete'),
+  deleteConfirmTitle: t('admin.deletePost'),
+  deleteConfirm: t('admin.confirmDelete'),
+  deleteSuccess: t('admin.deleteSuccess') || 'Post deleted successfully'
+}))
+
+const statusOptions = computed(() => [
+  { value: '', label: info.value.allStatus },
+  { value: 'draft', label: info.value.draft },
+  { value: 'published', label: info.value.published }
+])
 
 async function fetchPosts() {
   loading.value = true
@@ -71,16 +94,16 @@ function editPost(id: number) {
 async function deletePost(id: number, title: string) {
   try {
     await ElMessageBox.confirm(
-      `Are you sure you want to delete "${title}"?`,
-      'Delete Post',
+      `"${title}"?`,
+      info.value.deleteConfirmTitle,
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: info.value.delete,
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
     await adminPostApi.deletePost(id)
-    ElMessage.success('Post deleted successfully')
+    ElMessage.success(info.value.deleteSuccess)
     fetchPosts()
   } catch {
     // User cancelled
@@ -113,14 +136,14 @@ onMounted(() => {
 <template>
   <div class="post-list">
     <div class="header">
-      <h1 class="page-title">Posts</h1>
-      <ElButton type="primary" @click="createPost">New Post</ElButton>
+      <h1 class="page-title">{{ info.posts }}</h1>
+      <ElButton type="primary" @click="createPost">{{ info.newPost }}</ElButton>
     </div>
 
     <div class="filters">
       <ElSelect
         v-model="selectedCategory"
-        placeholder="Category"
+        :placeholder="info.category"
         clearable
         class="filter-select"
         @change="handleFilterChange"
@@ -135,7 +158,7 @@ onMounted(() => {
 
       <ElSelect
         v-model="selectedStatus"
-        placeholder="Status"
+        :placeholder="info.status"
         clearable
         class="filter-select"
         @change="handleFilterChange"
@@ -151,7 +174,7 @@ onMounted(() => {
 
     <ElTable :data="posts" v-loading="loading" stripe class="posts-table">
       <ElTableColumn prop="id" label="ID" width="80" />
-      <ElTableColumn prop="title" label="Title" min-width="200">
+      <ElTableColumn prop="title" :label="info.title || 'Title'" min-width="200">
         <template #default="{ row }">
           <div class="post-title-cell">
             <span class="post-title">{{ row.title }}</span>
@@ -159,25 +182,25 @@ onMounted(() => {
           </div>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="categoryName" label="Category" width="120" />
-      <ElTableColumn prop="status" label="Status" width="100">
+      <ElTableColumn prop="categoryName" :label="info.category" width="120" />
+      <ElTableColumn prop="status" :label="info.status" width="100">
         <template #default="{ row }">
           <ElTag :type="getStatusType(row.status)" size="small">
             {{ row.status }}
           </ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="viewCount" label="Views" width="80" align="center" />
-      <ElTableColumn prop="commentCount" label="Comments" width="100" align="center" />
-      <ElTableColumn prop="createdAt" label="Created" width="120">
+      <ElTableColumn prop="viewCount" :label="info.views" width="80" align="center" />
+      <ElTableColumn prop="commentCount" :label="info.comments" width="100" align="center" />
+      <ElTableColumn prop="createdAt" :label="info.created" width="120">
         <template #default="{ row }">
           {{ formatDate(row.createdAt) }}
         </template>
       </ElTableColumn>
-      <ElTableColumn label="Actions" width="160" fixed="right">
+      <ElTableColumn :label="info.actions" width="160" fixed="right">
         <template #default="{ row }">
-          <ElButton size="small" @click="editPost(row.id)">Edit</ElButton>
-          <ElButton size="small" type="danger" @click="deletePost(row.id, row.title)">Delete</ElButton>
+          <ElButton size="small" @click="editPost(row.id)">{{ info.edit }}</ElButton>
+          <ElButton size="small" type="danger" @click="deletePost(row.id, row.title)">{{ info.delete }}</ElButton>
         </template>
       </ElTableColumn>
     </ElTable>

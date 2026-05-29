@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import { ElTable, ElTableColumn, ElButton, ElInput, ElForm, ElFormItem, ElCard, ElMessage, ElMessageBox, ElTag } from 'element-plus'
 import { tagApi, type Tag } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const tags = ref<Tag[]>([])
 const loading = ref(false)
@@ -13,6 +16,26 @@ const newTag = reactive({
 
 const editingTag = ref<Tag | null>(null)
 const isEditing = ref(false)
+
+// Translations
+const info = computed(() => ({
+  tags: t('admin.tags'),
+  addTag: t('admin.addTag') || 'Add Tag',
+  editTag: t('admin.editTag') || 'Edit Tag',
+  name: t('admin.name'),
+  slug: t('admin.slug'),
+  add: t('common.add'),
+  update: t('common.edit') || 'Update',
+  cancel: t('common.cancel'),
+  actions: t('admin.actions'),
+  edit: t('admin.edit'),
+  delete: t('admin.delete'),
+  pleaseEnterName: t('admin.pleaseEnterName') || 'Please enter tag name',
+  deleteConfirm: t('admin.confirmDelete'),
+  tagCreated: t('admin.tagCreated') || 'Tag created successfully',
+  tagUpdated: t('admin.tagUpdated') || 'Tag updated successfully',
+  tagDeleted: t('admin.tagDeleted') || 'Tag deleted successfully'
+}))
 
 function generateSlug() {
   newTag.slug = newTag.name
@@ -35,17 +58,17 @@ async function fetchTags() {
 
 async function handleCreate() {
   if (!newTag.name.trim()) {
-    ElMessage.warning('Please enter tag name')
+    ElMessage.warning(info.value.pleaseEnterName)
     return
   }
 
   try {
     if (isEditing.value && editingTag.value) {
       await tagApi.update(editingTag.value.id, newTag)
-      ElMessage.success('Tag updated successfully')
+      ElMessage.success(info.value.tagUpdated)
     } else {
       await tagApi.create(newTag)
-      ElMessage.success('Tag created successfully')
+      ElMessage.success(info.value.tagCreated)
     }
     resetForm()
     fetchTags()
@@ -71,16 +94,16 @@ function resetForm() {
 async function handleDelete(id: number, name: string) {
   try {
     await ElMessageBox.confirm(
-      `Are you sure you want to delete "${name}"?`,
-      'Delete Tag',
+      `"${name}"?`,
+      info.value.delete,
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: info.value.delete,
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
     await tagApi.delete(id)
-    ElMessage.success('Tag deleted successfully')
+    ElMessage.success(info.value.tagDeleted)
     fetchTags()
   } catch {
     // User cancelled
@@ -95,34 +118,34 @@ onMounted(() => {
 <template>
   <div class="tag-manage">
     <div class="header">
-      <h1 class="page-title">Tags</h1>
+      <h1 class="page-title">{{ info.tags }}</h1>
     </div>
 
     <!-- Add/Edit Form -->
     <ElCard class="form-card">
       <template #header>
-        <span>{{ isEditing ? 'Edit Tag' : 'Add Tag' }}</span>
+        <span>{{ isEditing ? info.editTag : info.addTag }}</span>
       </template>
       <ElForm :inline="true" :model="newTag">
-        <ElFormItem label="Name">
+        <ElFormItem :label="info.name">
           <ElInput
             v-model="newTag.name"
-            placeholder="Tag name"
+            :placeholder="info.name"
             @blur="!isEditing && !newTag.slug && generateSlug()"
           />
         </ElFormItem>
-        <ElFormItem label="Slug">
-          <ElInput v-model="newTag.slug" placeholder="tag-slug">
+        <ElFormItem :label="info.slug">
+          <ElInput v-model="newTag.slug" :placeholder="info.slug">
             <template #append>
-              <ElButton @click="generateSlug" :disabled="isEditing">Generate</ElButton>
+              <ElButton @click="generateSlug" :disabled="isEditing">{{ t('common.add') }}</ElButton>
             </template>
           </ElInput>
         </ElFormItem>
         <ElFormItem>
           <ElButton type="primary" @click="handleCreate">
-            {{ isEditing ? 'Update' : 'Add' }}
+            {{ isEditing ? info.update : info.add }}
           </ElButton>
-          <ElButton v-if="isEditing" @click="resetForm">Cancel</ElButton>
+          <ElButton v-if="isEditing" @click="resetForm">{{ info.cancel }}</ElButton>
         </ElFormItem>
       </ElForm>
     </ElCard>
@@ -130,20 +153,20 @@ onMounted(() => {
     <!-- Tags Table -->
     <ElTable :data="tags" v-loading="loading" stripe class="tags-table">
       <ElTableColumn prop="id" label="ID" width="80" />
-      <ElTableColumn prop="name" label="Name" min-width="150">
+      <ElTableColumn prop="name" :label="info.name" min-width="150">
         <template #default="{ row }">
           <span class="tag-name">{{ row.name }}</span>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="slug" label="Slug" min-width="150">
+      <ElTableColumn prop="slug" :label="info.slug" min-width="150">
         <template #default="{ row }">
           <ElTag size="small" type="info">{{ row.slug }}</ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn label="Actions" width="150" fixed="right">
+      <ElTableColumn :label="info.actions" width="150" fixed="right">
         <template #default="{ row }">
-          <ElButton size="small" @click="startEdit(row)">Edit</ElButton>
-          <ElButton size="small" type="danger" @click="handleDelete(row.id, row.name)">Delete</ElButton>
+          <ElButton size="small" @click="startEdit(row)">{{ info.edit }}</ElButton>
+          <ElButton size="small" type="danger" @click="handleDelete(row.id, row.name)">{{ info.delete }}</ElButton>
         </template>
       </ElTableColumn>
     </ElTable>

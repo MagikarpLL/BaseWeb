@@ -9,6 +9,23 @@ const router = useRouter()
 const stats = ref<AnalyticsOverview | null>(null)
 const loading = ref(true)
 
+// Dashboard text translations
+const info = computed(() => ({
+  dashboard: t('admin.dashboard'),
+  totalPosts: t('admin.totalPosts') || 'Total Posts',
+  totalComments: t('admin.totalComments') || 'Total Comments',
+  totalViews: t('admin.totalViews') || 'Total Views',
+  todayVisitors: t('admin.todayVisitors') || 'Today Visitors',
+  quickActions: t('admin.quickActions') || 'Quick Actions',
+  writePost: t('admin.createPost'),
+  manageCategories: t('admin.manageCategories') || 'Manage Categories',
+  manageTags: t('admin.manageTags') || 'Manage Tags',
+  settings: t('admin.settings'),
+  recentPosts: t('admin.recentPosts') || 'Recent Posts',
+  viewAll: t('home.viewAll'),
+  noPosts: t('admin.noPosts') || 'No posts yet. Start writing!'
+}))
+
 async function fetchStats() {
   loading.value = true
   try {
@@ -49,7 +66,7 @@ onMounted(() => {
 
 <template>
   <div class="dashboard">
-    <h1 class="page-title">Dashboard</h1>
+    <h1 class="page-title">{{ info.dashboard }}</h1>
 
     <ElSkeleton v-if="loading" :rows="6" animated />
 
@@ -58,7 +75,7 @@ onMounted(() => {
       <ElRow :gutter="20" class="stats-row">
         <ElCol :xs="24" :sm="12" :md="6">
           <ElCard class="stat-card" @click="goToPosts">
-            <ElStatistic title="Total Posts" :value="stats.totalPosts">
+            <ElStatistic :title="info.totalPosts" :value="stats.totalPosts">
               <template #prefix>
                 <span class="stat-icon">📝</span>
               </template>
@@ -67,7 +84,7 @@ onMounted(() => {
         </ElCol>
         <ElCol :xs="24" :sm="12" :md="6">
           <ElCard class="stat-card" @click="goToComments">
-            <ElStatistic title="Total Comments" :value="stats.totalComments">
+            <ElStatistic :title="info.totalComments" :value="stats.totalComments">
               <template #prefix>
                 <span class="stat-icon">💬</span>
               </template>
@@ -76,7 +93,7 @@ onMounted(() => {
         </ElCol>
         <ElCol :xs="24" :sm="12" :md="6">
           <ElCard class="stat-card" @click="goToAnalytics">
-            <ElStatistic title="Total Views" :value="stats.totalViews">
+            <ElStatistic :title="info.totalViews" :value="stats.totalViews">
               <template #prefix>
                 <span class="stat-icon">👁️</span>
               </template>
@@ -85,7 +102,7 @@ onMounted(() => {
         </ElCol>
         <ElCol :xs="24" :sm="12" :md="6">
           <ElCard class="stat-card">
-            <ElStatistic title="Today Visitors" :value="stats.todayPV + stats.todayUV">
+            <ElStatistic :title="info.todayVisitors" :value="stats.todayPV + stats.todayUV">
               <template #prefix>
                 <span class="stat-icon">📊</span>
               </template>
@@ -99,7 +116,7 @@ onMounted(() => {
         <ElCol :span="24">
           <ElCard>
             <template #header>
-              <span>Quick Actions</span>
+              <span>{{ info.quickActions }}</span>
             </template>
             <div class="quick-actions">
               <ElCard
@@ -108,7 +125,7 @@ onMounted(() => {
                 @click="router.push('/admin/posts/new')"
               >
                 <div class="action-icon">✍️</div>
-                <div class="action-text">Write Post</div>
+                <div class="action-text">{{ info.writePost }}</div>
               </ElCard>
               <ElCard
                 class="action-card"
@@ -116,7 +133,7 @@ onMounted(() => {
                 @click="router.push('/admin/categories')"
               >
                 <div class="action-icon">📁</div>
-                <div class="action-text">Manage Categories</div>
+                <div class="action-text">{{ info.manageCategories }}</div>
               </ElCard>
               <ElCard
                 class="action-card"
@@ -124,7 +141,7 @@ onMounted(() => {
                 @click="router.push('/admin/tags')"
               >
                 <div class="action-icon">🏷️</div>
-                <div class="action-text">Manage Tags</div>
+                <div class="action-text">{{ info.manageTags }}</div>
               </ElCard>
               <ElCard
                 class="action-card"
@@ -132,7 +149,7 @@ onMounted(() => {
                 @click="router.push('/admin/settings')"
               >
                 <div class="action-icon">⚙️</div>
-                <div class="action-text">Settings</div>
+                <div class="action-text">{{ info.settings }}</div>
               </ElCard>
             </div>
           </ElCard>
@@ -145,13 +162,13 @@ onMounted(() => {
           <ElCard>
             <template #header>
               <div class="card-header">
-                <span>Recent Posts</span>
+                <span>{{ info.recentPosts }}</span>
                 <ElCard
                   class="view-all-btn"
                   shadow="hover"
                   @click="goToPosts"
                 >
-                  View All
+                  {{ info.viewAll }}
                 </ElCard>
               </div>
             </template>
@@ -163,11 +180,11 @@ onMounted(() => {
                 @click="router.push(`/admin/posts/${post.id}/edit`)"
               >
                 <span class="post-title">{{ post.title }}</span>
-                <span class="post-views">{{ post.viewCount }} views</span>
+                <span class="post-views">{{ post.viewCount }} {{ t('admin.views') || 'views' }}</span>
               </div>
             </div>
             <div v-else class="no-posts">
-              <p>No posts yet. Start writing!</p>
+              <p>{{ info.noPosts }}</p>
             </div>
           </ElCard>
         </ElCol>

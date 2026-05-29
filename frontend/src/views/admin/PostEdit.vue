@@ -4,6 +4,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption, ElMessage, ElCard } from 'element-plus'
 import { marked } from 'marked'
 import { adminPostApi, categoryApi, tagApi, type Category, type Tag, type PostFormData } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const route = useRoute()
 const router = useRouter()
@@ -32,14 +35,14 @@ const form = reactive<PostFormData>({
 
 const rules = {
   title: [
-    { required: true, message: 'Please enter title', trigger: 'blur' },
-    { min: 2, max: 200, message: 'Title must be 2-200 characters', trigger: 'blur' }
+    { required: true, message: info.value.pleaseEnterTitle, trigger: 'blur' },
+    { min: 2, max: 200, message: info.value.titleLengthMessage, trigger: 'blur' }
   ],
   content: [
-    { required: true, message: 'Please enter content', trigger: 'blur' }
+    { required: true, message: info.value.pleaseEnterContent, trigger: 'blur' }
   ],
   categoryId: [
-    { required: true, message: 'Please select category', trigger: 'change' }
+    { required: true, message: info.value.pleaseSelectCategory, trigger: 'change' }
   ]
 }
 
@@ -47,6 +50,35 @@ const previewContent = computed(() => {
   if (!form.content) return ''
   return marked(form.content)
 })
+
+// Translations
+const info = computed(() => ({
+  createPost: t('admin.createPost'),
+  editPost: t('admin.editPost'),
+  cancel: t('common.cancel'),
+  update: t('common.edit') || 'Update',
+  create: t('common.add') || 'Create',
+  title: t('admin.title'),
+  slug: t('admin.slug'),
+  generateSlug: t('admin.generateSlug') || 'Generate',
+  excerpt: t('admin.excerpt'),
+  content: t('admin.content'),
+  contentMarkdown: t('admin.contentMarkdown') || 'Content (Markdown)',
+  publish: t('admin.publish'),
+  draft: t('admin.draft'),
+  published: t('admin.published'),
+  pinToTop: t('admin.pinToTop') || 'Pin to top',
+  category: t('admin.category'),
+  tags: t('admin.tags'),
+  coverImage: t('admin.featuredImage'),
+  preview: t('admin.preview'),
+  pleaseEnterTitle: t('admin.pleaseEnterTitle') || 'Please enter title',
+  titleLengthMessage: t('admin.titleLengthMessage') || 'Title must be 2-200 characters',
+  pleaseEnterContent: t('admin.pleaseEnterContent') || 'Please enter content',
+  pleaseSelectCategory: t('admin.pleaseSelectCategory') || 'Please select category',
+  postUpdated: t('admin.postUpdated') || 'Post updated successfully',
+  postCreated: t('admin.postCreated') || 'Post created successfully'
+}))
 
 async function fetchCategories() {
   try {
@@ -134,11 +166,11 @@ onMounted(async () => {
 <template>
   <div class="post-edit">
     <div class="header">
-      <h1 class="page-title">{{ isEdit ? 'Edit Post' : 'New Post' }}</h1>
+      <h1 class="page-title">{{ isEdit ? info.editPost : info.createPost }}</h1>
       <div class="header-actions">
-        <ElButton @click="handleCancel">Cancel</ElButton>
+        <ElButton @click="handleCancel">{{ info.cancel }}</ElButton>
         <ElButton type="primary" :loading="loading" @click="handleSubmit">
-          {{ isEdit ? 'Update' : 'Create' }}
+          {{ isEdit ? info.update : info.create }}
         </ElButton>
       </div>
     </div>
@@ -152,36 +184,36 @@ onMounted(async () => {
             :rules="rules"
             label-position="top"
           >
-            <ElFormItem label="Title" prop="title">
+            <ElFormItem :label="info.title" prop="title">
               <ElInput
                 v-model="form.title"
-                placeholder="Enter post title"
+                :placeholder="info.pleaseEnterTitle || 'Enter post title'"
                 size="large"
                 @blur="!form.slug && generateSlug()"
               />
             </ElFormItem>
 
-            <ElFormItem label="Slug" prop="slug">
+            <ElFormItem :label="info.slug" prop="slug">
               <ElInput
                 v-model="form.slug"
                 placeholder="post-url-slug"
               >
                 <template #append>
-                  <ElButton @click="generateSlug">Generate</ElButton>
+                  <ElButton @click="generateSlug">{{ info.generateSlug }}</ElButton>
                 </template>
               </ElInput>
             </ElFormItem>
 
-            <ElFormItem label="Excerpt" prop="excerpt">
+            <ElFormItem :label="info.excerpt" prop="excerpt">
               <ElInput
                 v-model="form.excerpt"
                 type="textarea"
                 :rows="3"
-                placeholder="Brief description for list view"
+                :placeholder="info.pleaseEnterTitle || 'Brief description for list view'"
               />
             </ElFormItem>
 
-            <ElFormItem label="Content (Markdown)" prop="content">
+            <ElFormItem :label="info.contentMarkdown" prop="content">
               <ElInput
                 v-model="form.content"
                 type="textarea"
@@ -197,36 +229,36 @@ onMounted(async () => {
       <div class="side-panel">
         <ElCard>
           <template #header>
-            <span>Publish</span>
+            <span>{{ info.publish }}</span>
           </template>
           <ElForm label-position="top">
-            <ElFormItem label="Status">
+            <ElFormItem :label="info.status">
               <ElSelect v-model="form.status" style="width: 100%">
-                <ElOption label="Draft" value="draft" />
-                <ElOption label="Published" value="published" />
+                <ElOption :label="info.draft" value="draft" />
+                <ElOption :label="info.published" value="published" />
               </ElSelect>
             </ElFormItem>
             <ElFormItem>
               <label class="top-checkbox">
                 <input type="checkbox" v-model="form.isTop" />
-                <span>Pin to top</span>
+                <span>{{ info.pinToTop }}</span>
               </label>
             </ElFormItem>
           </ElForm>
           <div class="publish-actions">
             <ElButton type="primary" :loading="loading" @click="handleSubmit" style="width: 100%">
-              {{ isEdit ? 'Update' : 'Publish' }}
+              {{ isEdit ? info.update : info.publish }}
             </ElButton>
           </div>
         </ElCard>
 
         <ElCard>
           <template #header>
-            <span>Category</span>
+            <span>{{ info.category }}</span>
           </template>
           <ElForm label-position="top">
             <ElFormItem prop="categoryId">
-              <ElSelect v-model="form.categoryId" placeholder="Select category" style="width: 100%">
+              <ElSelect v-model="form.categoryId" :placeholder="info.pleaseSelectCategory" style="width: 100%">
                 <ElOption
                   v-for="cat in categories"
                   :key="cat.id"
@@ -240,10 +272,10 @@ onMounted(async () => {
 
         <ElCard>
           <template #header>
-            <span>Cover Image</span>
+            <span>{{ info.coverImage }}</span>
           </template>
           <ElForm label-position="top">
-            <ElFormItem label="Image URL">
+            <ElFormItem :label="t('admin.imageUrl') || 'Image URL'">
               <ElInput v-model="form.coverImage" placeholder="https://..." />
             </ElFormItem>
           </ElForm>
@@ -251,14 +283,14 @@ onMounted(async () => {
 
         <ElCard>
           <template #header>
-            <span>Tags</span>
+            <span>{{ info.tags }}</span>
           </template>
           <ElForm label-position="top">
             <ElFormItem>
               <ElSelect
                 v-model="form.tagIds"
                 multiple
-                placeholder="Select tags"
+                :placeholder="t('admin.selectTags') || 'Select tags'"
                 style="width: 100%"
               >
                 <ElOption
@@ -275,7 +307,7 @@ onMounted(async () => {
         <!-- Preview Card -->
         <ElCard>
           <template #header>
-            <span>Preview</span>
+            <span>{{ info.preview }}</span>
           </template>
           <div class="preview-content markdown-body" v-html="previewContent"></div>
         </ElCard>

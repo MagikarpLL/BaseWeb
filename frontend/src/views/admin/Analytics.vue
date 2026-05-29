@@ -1,8 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { ElCard, ElRow, ElCol, ElSkeleton } from 'element-plus'
 import * as echarts from 'echarts'
 import { analyticsApi, type AnalyticsTrend, type AnalyticsPage, type AnalyticsSource } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
+
+// Translations
+const info = computed(() => ({
+  analytics: t('admin.analytics'),
+  visitorTrend: t('admin.visitorTrend') || '7-Day Visitor Trend',
+  topPages: t('admin.topPages') || 'Top Pages',
+  trafficSources: t('admin.trafficSources') || 'Traffic Sources',
+  pv: 'PV',
+  uv: 'UV',
+  views: t('admin.views') || 'Views'
+}))
 
 const trendChartRef = ref<HTMLDivElement>()
 const topPagesChartRef = ref<HTMLDivElement>()
@@ -27,7 +41,7 @@ function initTrendChart() {
   trendChart = echarts.init(trendChartRef.value)
   trendChart.setOption({
     title: {
-      text: '7-Day Visitor Trend',
+      text: info.value.visitorTrend,
       left: 'center',
       textStyle: { fontSize: 16, fontWeight: 600 }
     },
@@ -36,7 +50,7 @@ function initTrendChart() {
       axisPointer: { type: 'cross' }
     },
     legend: {
-      data: ['PV', 'UV'],
+      data: [info.value.pv, info.value.uv],
       bottom: 0
     },
     grid: {
@@ -56,7 +70,7 @@ function initTrendChart() {
     },
     series: [
       {
-        name: 'PV',
+        name: info.value.pv,
         type: 'line',
         smooth: true,
         data: trendData.value.pv,
@@ -65,7 +79,7 @@ function initTrendChart() {
         itemStyle: { color: '#409eff' }
       },
       {
-        name: 'UV',
+        name: info.value.uv,
         type: 'line',
         smooth: true,
         data: trendData.value.uv,
@@ -87,7 +101,7 @@ function initTopPagesChart() {
   topPagesChart = echarts.init(topPagesChartRef.value)
   topPagesChart.setOption({
     title: {
-      text: 'Top Pages',
+      text: info.value.topPages,
       left: 'center',
       textStyle: { fontSize: 16, fontWeight: 600 }
     },
@@ -112,7 +126,7 @@ function initTopPagesChart() {
     },
     series: [
       {
-        name: 'Views',
+        name: info.value.views,
         type: 'bar',
         data: topPages.value.map(p => p.viewCount).slice(0, 10).reverse(),
         itemStyle: { color: '#409eff' },
@@ -136,7 +150,7 @@ function initSourcesChart() {
   sourcesChart = echarts.init(sourcesChartRef.value)
   sourcesChart.setOption({
     title: {
-      text: 'Traffic Sources',
+      text: info.value.trafficSources,
       left: 'center',
       textStyle: { fontSize: 16, fontWeight: 600 }
     },
@@ -229,7 +243,7 @@ onUnmounted(() => {
 
 <template>
   <div class="analytics">
-    <h1 class="page-title">Analytics</h1>
+    <h1 class="page-title">{{ info.analytics }}</h1>
 
     <ElSkeleton v-if="loading" :rows="10" animated />
 

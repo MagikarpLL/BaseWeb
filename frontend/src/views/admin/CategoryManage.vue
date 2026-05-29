@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import { ElTable, ElTableColumn, ElButton, ElInput, ElForm, ElFormItem, ElCard, ElMessage, ElMessageBox, ElTag } from 'element-plus'
 import { categoryApi, type Category } from '@/api'
+import { useLocale } from '@/composables/useLocale'
+
+const { t } = useLocale()
 
 const categories = ref<Category[]>([])
 const loading = ref(false)
@@ -14,6 +17,28 @@ const newCategory = reactive({
 
 const editingCategory = ref<Category | null>(null)
 const isEditing = ref(false)
+
+// Translations
+const info = computed(() => ({
+  categories: t('admin.categories'),
+  addCategory: t('admin.addCategory') || 'Add Category',
+  editCategory: t('admin.editCategory') || 'Edit Category',
+  name: t('admin.name'),
+  slug: t('admin.slug'),
+  description: t('admin.description') || 'Description',
+  add: t('common.add'),
+  update: t('common.edit') || 'Update',
+  cancel: t('common.cancel'),
+  posts: t('admin.posts'),
+  actions: t('admin.actions'),
+  edit: t('admin.edit'),
+  delete: t('admin.delete'),
+  pleaseEnterName: t('admin.pleaseEnterName') || 'Please enter category name',
+  deleteConfirm: t('admin.confirmDelete'),
+  categoryCreated: t('admin.categoryCreated') || 'Category created successfully',
+  categoryUpdated: t('admin.categoryUpdated') || 'Category updated successfully',
+  categoryDeleted: t('admin.categoryDeleted') || 'Category deleted successfully'
+}))
 
 function generateSlug() {
   newCategory.slug = newCategory.name
@@ -36,17 +61,17 @@ async function fetchCategories() {
 
 async function handleCreate() {
   if (!newCategory.name.trim()) {
-    ElMessage.warning('Please enter category name')
+    ElMessage.warning(info.value.pleaseEnterName)
     return
   }
 
   try {
     if (isEditing.value && editingCategory.value) {
       await categoryApi.update(editingCategory.value.id, newCategory)
-      ElMessage.success('Category updated successfully')
+      ElMessage.success(info.value.categoryUpdated)
     } else {
       await categoryApi.create(newCategory)
-      ElMessage.success('Category created successfully')
+      ElMessage.success(info.value.categoryCreated)
     }
     resetForm()
     fetchCategories()
@@ -74,16 +99,16 @@ function resetForm() {
 async function handleDelete(id: number, name: string) {
   try {
     await ElMessageBox.confirm(
-      `Are you sure you want to delete "${name}"?`,
-      'Delete Category',
+      `"${name}"?`,
+      info.value.delete,
       {
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: info.value.delete,
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
     await categoryApi.delete(id)
-    ElMessage.success('Category deleted successfully')
+    ElMessage.success(info.value.categoryDeleted)
     fetchCategories()
   } catch {
     // User cancelled
@@ -98,37 +123,37 @@ onMounted(() => {
 <template>
   <div class="category-manage">
     <div class="header">
-      <h1 class="page-title">Categories</h1>
+      <h1 class="page-title">{{ info.categories }}</h1>
     </div>
 
     <!-- Add/Edit Form -->
     <ElCard class="form-card">
       <template #header>
-        <span>{{ isEditing ? 'Edit Category' : 'Add Category' }}</span>
+        <span>{{ isEditing ? info.editCategory : info.addCategory }}</span>
       </template>
       <ElForm :inline="true" :model="newCategory">
-        <ElFormItem label="Name">
+        <ElFormItem :label="info.name">
           <ElInput
             v-model="newCategory.name"
-            placeholder="Category name"
+            :placeholder="info.name"
             @blur="!isEditing && !newCategory.slug && generateSlug()"
           />
         </ElFormItem>
-        <ElFormItem label="Slug">
-          <ElInput v-model="newCategory.slug" placeholder="category-slug">
+        <ElFormItem :label="info.slug">
+          <ElInput v-model="newCategory.slug" :placeholder="info.slug">
             <template #append>
-              <ElButton @click="generateSlug" :disabled="isEditing">Generate</ElButton>
+              <ElButton @click="generateSlug" :disabled="isEditing">{{ t('common.add') }}</ElButton>
             </template>
           </ElInput>
         </ElFormItem>
-        <ElFormItem label="Description">
-          <ElInput v-model="newCategory.description" placeholder="Description (optional)" />
+        <ElFormItem :label="info.description">
+          <ElInput v-model="newCategory.description" :placeholder="info.description" />
         </ElFormItem>
         <ElFormItem>
           <ElButton type="primary" @click="handleCreate">
-            {{ isEditing ? 'Update' : 'Add' }}
+            {{ isEditing ? info.update : info.add }}
           </ElButton>
-          <ElButton v-if="isEditing" @click="resetForm">Cancel</ElButton>
+          <ElButton v-if="isEditing" @click="resetForm">{{ info.cancel }}</ElButton>
         </ElFormItem>
       </ElForm>
     </ElCard>
@@ -136,22 +161,22 @@ onMounted(() => {
     <!-- Categories Table -->
     <ElTable :data="categories" v-loading="loading" stripe class="categories-table">
       <ElTableColumn prop="id" label="ID" width="80" />
-      <ElTableColumn prop="name" label="Name" min-width="150">
+      <ElTableColumn prop="name" :label="info.name" min-width="150">
         <template #default="{ row }">
           <span class="category-name">{{ row.name }}</span>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="slug" label="Slug" min-width="150">
+      <ElTableColumn prop="slug" :label="info.slug" min-width="150">
         <template #default="{ row }">
           <ElTag size="small">{{ row.slug }}</ElTag>
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="description" label="Description" min-width="200" />
-      <ElTableColumn prop="postCount" label="Posts" width="80" align="center" />
-      <ElTableColumn label="Actions" width="150" fixed="right">
+      <ElTableColumn prop="description" :label="info.description" min-width="200" />
+      <ElTableColumn prop="postCount" :label="info.posts" width="80" align="center" />
+      <ElTableColumn :label="info.actions" width="150" fixed="right">
         <template #default="{ row }">
-          <ElButton size="small" @click="startEdit(row)">Edit</ElButton>
-          <ElButton size="small" type="danger" @click="handleDelete(row.id, row.name)">Delete</ElButton>
+          <ElButton size="small" @click="startEdit(row)">{{ info.edit }}</ElButton>
+          <ElButton size="small" type="danger" @click="handleDelete(row.id, row.name)">{{ info.delete }}</ElButton>
         </template>
       </ElTableColumn>
     </ElTable>
