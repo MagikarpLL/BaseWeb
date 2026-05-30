@@ -31,3 +31,16 @@ npm-debug.log*
 
 # Test coverage
 coverage/
+
+# Local scripts (contain local paths or credentials)
+admin_hash.txt
+fix_admin.sql
+get_hash.py
+update_admin_password.py
+start-backend.ps1
+start-frontend.ps1
+
+# OpenCode internal (should never commit)
+.codebuddy/
+.harness/
+.opencode/
