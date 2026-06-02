@@ -34,7 +34,6 @@ npm-debug.log*
 coverage/
 
 # Local scripts (contain local paths or credentials)
-scripts/
 start-backend.ps1
 start-frontend.ps1
 

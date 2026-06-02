@@ -37,7 +37,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/public/**", "/auth/**").permitAll()
                 .requestMatchers("/blog/**", "/analytics/**").permitAll()
-                .requestMatchers("/robots.txt", "/sitemap.xml", "/uploads/**").permitAll()
+                .requestMatchers("/robots.txt", "/sitemap.xml", "/uploads/**", "/images/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/analytics/**").hasAnyRole("ADMIN", "USER")
