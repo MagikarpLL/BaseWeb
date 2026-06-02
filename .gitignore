@@ -7,6 +7,7 @@ backend/node_modules/
 dist/
 build/
 *.class
+target/
 
 # IDE
 .idea/
@@ -44,3 +45,17 @@ start-frontend.ps1
 .codebuddy/
 .harness/
 .opencode/
+
+# Vite
+.vite/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Java builds
+*.jar
+
+# Temporary files
+*.tmp
+*.bak
