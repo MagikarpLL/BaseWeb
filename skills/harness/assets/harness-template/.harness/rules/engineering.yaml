@@ -1,0 +1,17 @@
+- id: ENG-001
+  level: must
+  rule: "Implementation must follow the active Harness spec and plan unless the user explicitly changes scope."
+  applies_when:
+    - "Implementation phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: ENG-002
+  level: should
+  rule: "Keep changes scoped to the smallest set of files needed to satisfy the active plan."
+  applies_when:
+    - "Implementation phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual

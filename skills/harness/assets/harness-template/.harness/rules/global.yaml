@@ -1,0 +1,17 @@
+- id: GLOBAL-001
+  level: must
+  rule: "Read .harness/state.yaml before executing a Harness phase."
+  applies_when:
+    - "Any Harness phase is invoked"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: GLOBAL-002
+  level: must
+  rule: "Do not read or rely on project history-doc materials for Harness workflow design."
+  applies_when:
+    - "Designing or updating Harness skills and workflow artifacts"
+  confirmation_required_for_changes: true
+  check:
+    type: manual

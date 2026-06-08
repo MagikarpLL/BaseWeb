@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Intake"
+  short_description: "Clarify requirements before specs"
+  default_prompt: "Use Harness Intake to clarify the goal, constraints, open questions, audience, and success criteria before moving to specs."

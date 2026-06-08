@@ -1,0 +1,7 @@
+version: 1
+name: repair
+pass_when:
+  - failed_verification_evidence_exists
+  - repair_attempts_under_limit
+  - repair_plan_targets_recorded_failure
+fail_to: repair_limit_reached

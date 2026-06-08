@@ -36,11 +36,20 @@ coverage/
 # Local scripts (contain local paths or credentials)
 start-backend.ps1
 start-frontend.ps1
+scripts/admin_hash.txt
+scripts/fix_admin.sql
+backend/update_admin.sql
 
 # OpenCode internal (should never commit)
 .codebuddy/
-.harness/
 .opencode/
+
+# Harness runtime artifacts
+.harness/runs/*
+!.harness/runs/.gitkeep
+.harness/reports/*.yaml
+!.harness/reports/.gitkeep
+.harness/reports/verification-report.yaml
 
 # Vite
 .vite/

@@ -1,0 +1,16 @@
+version: 1
+max_attempts: 3
+strategy: minimal_evidence_based_fix
+requires_failed_verification_evidence: true
+stage_policy:
+  repair_earliest_failed_required_stage_first: true
+  rerun_later_required_stages_after_fix: true
+allowed_verification_stages:
+  - unit
+  - integration
+  - e2e
+  - delivery
+stop_when:
+  - same_failure_repeats_twice
+  - requires_scope_change
+  - requires_adapter_change_without_user_confirmation

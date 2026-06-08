@@ -1,0 +1,8 @@
+version: 1
+name: spec
+pass_when:
+  - active_spec_exists
+  - acceptance_criteria_present
+  - non_goals_present
+  - verification_expectations_present
+fail_to: needs_user_input

@@ -1,0 +1,26 @@
+- id: TEST-001
+  level: must
+  rule: "Delivery must include at least one recorded verification method."
+  applies_when:
+    - "Any implementation changes are delivered"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: TEST-002
+  level: should
+  rule: "Verification should map back to active spec acceptance criteria."
+  applies_when:
+    - "Verification phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: TEST-003
+  level: must
+  rule: "Verification must execute project-declared required checks from .harness/adapters/verify.yaml."
+  applies_when:
+    - "Verification phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual

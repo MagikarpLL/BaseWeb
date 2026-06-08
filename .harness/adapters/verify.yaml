@@ -1,0 +1,87 @@
+version: 1
+description: Staged verification adapter for this Spring Boot + Vue + nginx project.
+stage_order:
+  - unit
+  - integration
+  - e2e
+  - delivery
+
+stages:
+  unit:
+    required: true
+    description: "Fast code-level tests. Do not start containers. If this stage fails, repair before running integration."
+    commands:
+      backend_unit:
+        run: "mvn test"
+        cwd: "backend"
+        required: true
+        description: "Run backend JUnit/Mockito unit tests."
+      frontend_unit:
+        run: "npm run test:run"
+        cwd: "frontend"
+        required: true
+        description: "Run frontend Vitest unit tests."
+      unit_script:
+        run: "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness/verify-unit.ps1"
+        required: false
+        description: "Project helper that runs backend and frontend unit checks."
+
+  integration:
+    required: true
+    description: "Container-backed service integration. Start postgres/backend/frontend/nginx and verify service health plus API proxying."
+    depends_on:
+      - unit
+    commands:
+      integration_script:
+        run: "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness/verify-integration.ps1"
+        required: true
+        description: "Build and start docker-compose services, then verify backend health, nginx frontend, and nginx /api proxy."
+
+  e2e:
+    required: true
+    description: "Browser and API behavior through the deployed nginx entrypoint."
+    depends_on:
+      - integration
+    commands:
+      e2e_script:
+        run: "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness/verify-e2e.ps1"
+        required: true
+        description: "Run Playwright against nginx-served frontend and nginx-proxied backend API."
+
+  delivery:
+    required: true
+    description: "Final Harness delivery gate. No new commands by default; requires all prior required stages to pass."
+    depends_on:
+      - unit
+      - integration
+      - e2e
+    checks:
+      require_stage_reports:
+        required: true
+        reports:
+          - .harness/reports/unit-report.yaml
+          - .harness/reports/integration-report.yaml
+          - .harness/reports/e2e-report.yaml
+      require_no_unexplained_skips:
+        required: true
+
+full_run:
+  run: "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/harness/verify-fullstack.ps1"
+  description: "Run unit, integration, and e2e stages in order."
+
+manual_checks:
+  browser_smoke:
+    required: false
+    stage: e2e
+    description: "Open http://localhost and confirm key public/admin pages render without blank screens."
+
+output:
+  report: .harness/reports/verification-report.yaml
+  stage_reports:
+    unit: .harness/reports/unit-report.yaml
+    integration: .harness/reports/integration-report.yaml
+    e2e: .harness/reports/e2e-report.yaml
+  logs:
+    unit: .harness/runs/local-unit/logs
+    integration: .harness/runs/local-integration/logs
+    e2e: .harness/runs/local-e2e/logs

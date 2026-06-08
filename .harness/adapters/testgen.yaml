@@ -1,0 +1,11 @@
+version: 1
+mode: ai_assisted
+description: Project-specific test generation preferences.
+locations:
+  unit_tests: ""
+  integration_tests: ""
+  e2e_tests: ""
+rules:
+  - "Map each acceptance criterion to at least one automated or manual verification item."
+  - "Prefer behavior-focused tests over implementation-detail tests."
+requires_user_confirmation_for_changes: true

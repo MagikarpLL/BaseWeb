@@ -1,0 +1,8 @@
+version: 1
+required_concepts:
+  - implementation_sequence
+  - touched_areas
+  - verification_adapter_coverage
+  - risks
+  - repair_strategy
+gate: plan

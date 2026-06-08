@@ -1,0 +1,10 @@
+version: 1
+name: verify
+pass_when:
+  - verify_adapter_exists
+  - unit_stage_passed
+  - integration_stage_passed
+  - e2e_stage_passed
+  - all_required_adapter_checks_pass
+  - verification_report_written
+fail_to: verification_failed

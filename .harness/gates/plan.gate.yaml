@@ -1,0 +1,8 @@
+version: 1
+name: plan
+pass_when:
+  - active_spec_status_is_spec_ready
+  - implementation_sequence_present
+  - verify_adapter_exists
+  - acceptance_criteria_have_verification_mapping
+fail_to: planning

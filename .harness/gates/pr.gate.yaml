@@ -1,0 +1,8 @@
+version: 1
+name: pr
+pass_when:
+  - verification_report_passed
+  - all_required_verification_stages_passed
+  - required_pr_adapter_conditions_pass
+  - review_artifact_written
+fail_to: reviewing

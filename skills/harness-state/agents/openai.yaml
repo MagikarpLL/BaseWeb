@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness State"
+  short_description: "Manage persistent Harness state"
+  default_prompt: "Use Harness State to initialize, read, validate, recover, and advance .harness state across workflow phases."

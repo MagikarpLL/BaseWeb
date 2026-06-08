@@ -1,0 +1,42 @@
+version: 1
+project:
+  name: ""
+  root: ""
+
+current:
+  state: idle
+  active_run: null
+  active_spec: null
+  updated_at: ""
+
+priorities:
+  - requirement_clarification
+  - spec_decomposition
+  - test_verification
+  - self_repair
+
+gates:
+  rule_changes_require_confirmation: true
+  require_spec_before_implementation: true
+  require_verification_before_delivery: true
+  repair_attempt_limit: 2
+  require_verify_adapter_before_implementation: true
+
+progress:
+  completed_states: []
+  next_recommended_state: intake
+
+open_questions: []
+blockers: []
+transition_log: []
+
+artifacts:
+  specs_index: .harness/specs/index.yaml
+  adapters_dir: .harness/adapters
+  contracts_dir: .harness/contracts
+  gates_dir: .harness/gates
+  plans_dir: .harness/plans
+  rules_dir: .harness/rules
+  runs_dir: .harness/runs
+  reports_dir: .harness/reports
+  repairs_dir: .harness/repairs

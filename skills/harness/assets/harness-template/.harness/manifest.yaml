@@ -1,0 +1,12 @@
+version: 1
+name: harness-project-state
+description: Project-local Harness state, specs, rules, runs, and repair records.
+format:
+  state: yaml
+  rules: yaml
+  adapters: yaml
+  contracts: yaml
+  gates: yaml
+  specs: markdown
+  indexes: yaml
+created_by: harness

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Plan"
+  short_description: "Turn specs into executable plans"
+  default_prompt: "Use Harness Plan to convert an approved spec into ordered implementation steps, validation commands, risks, and repair strategy."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness"
+  short_description: "Coordinate staged Harness engineering work"
+  default_prompt: "Use Harness to clarify requirements, maintain specs, plan implementation, verify work, repair failures, and review delivery."

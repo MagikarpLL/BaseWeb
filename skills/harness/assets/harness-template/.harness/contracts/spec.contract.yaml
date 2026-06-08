@@ -1,0 +1,14 @@
+version: 1
+required_files:
+  - specs/000-intake.md
+  - specs/001-problem.md
+  - specs/002-scope.md
+  - specs/003-design.md
+  - specs/004-test-plan.md
+  - specs/005-delivery.md
+required_concepts:
+  - goal
+  - non_goals
+  - acceptance_criteria
+  - verification_expectations
+gate: spec

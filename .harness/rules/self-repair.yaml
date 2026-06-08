@@ -1,0 +1,17 @@
+- id: REPAIR-001
+  level: must
+  rule: "Self-repair must be based on recorded failed verification evidence."
+  applies_when:
+    - "Repair phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: REPAIR-002
+  level: must
+  rule: "Automatic repair attempts must not exceed state.gates.repair_attempt_limit."
+  applies_when:
+    - "Repair phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual

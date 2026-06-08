@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Rules"
+  short_description: "Govern confirmed rule changes"
+  default_prompt: "Use Harness Rules to read project rules and propose exact rule changes that must be confirmed before writing."

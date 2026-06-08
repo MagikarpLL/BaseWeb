@@ -1,0 +1,13 @@
+version: 1
+active_spec: feature-001
+specs:
+  - id: feature-001
+    title: ""
+    status: drafting
+    files:
+      intake: 000-intake.md
+      problem: 001-problem.md
+      scope: 002-scope.md
+      design: 003-design.md
+      test_plan: 004-test-plan.md
+      delivery: 005-delivery.md

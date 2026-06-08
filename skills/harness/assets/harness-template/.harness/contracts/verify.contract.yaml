@@ -1,0 +1,20 @@
+version: 1
+required_inputs:
+  - .harness/adapters/verify.yaml
+  - active_spec_acceptance_criteria
+required_outputs:
+  - active_run/verification.yaml
+  - .harness/reports/verification-report.yaml
+required_fields:
+  - stage
+  - adapter
+  - command
+  - required
+  - result
+  - summary
+stage_order:
+  - unit
+  - integration
+  - e2e
+  - delivery
+gate: verify

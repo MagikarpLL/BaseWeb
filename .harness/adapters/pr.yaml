@@ -1,0 +1,12 @@
+version: 1
+base_branch: main
+require_clean_worktree: true
+require_verification_passed: true
+title_template: "[Harness] {spec_title}"
+body_sections:
+  - Summary
+  - Specs Implemented
+  - Verification
+  - Repair Attempts
+  - Risks
+requires_user_confirmation_for_changes: true

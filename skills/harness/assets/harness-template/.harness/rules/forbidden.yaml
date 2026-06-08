@@ -1,0 +1,26 @@
+- id: FORBID-001
+  level: forbid
+  rule: "Do not add, remove, weaken, or strengthen Harness rules without explicit user confirmation."
+  applies_when:
+    - "Any rule change is proposed"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: FORBID-002
+  level: forbid
+  rule: "Do not mark a Harness run delivered without verification evidence."
+  applies_when:
+    - "Review or delivery phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual
+
+- id: FORBID-003
+  level: forbid
+  rule: "Do not change verification adapters to bypass a failing required check without explicit user confirmation."
+  applies_when:
+    - "Verification, repair, review, or PR phase"
+  confirmation_required_for_changes: true
+  check:
+    type: manual

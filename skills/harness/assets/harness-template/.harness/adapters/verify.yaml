@@ -1,0 +1,66 @@
+version: 1
+description: Project-specific staged verification adapter. Edit commands for each project after user confirmation.
+stage_order:
+  - unit
+  - integration
+  - e2e
+  - delivery
+
+stages:
+  unit:
+    required: true
+    description: "Fast code-level tests. Do not start containers. If this stage fails, repair before running integration."
+    commands:
+      backend_unit:
+        run: ""
+        cwd: ""
+        required: false
+        description: "Backend unit test command, for example mvn test, pytest, cargo test, or go test ./..."
+      frontend_unit:
+        run: ""
+        cwd: ""
+        required: false
+        description: "Frontend unit test command, for example npm run test:run."
+
+  integration:
+    required: true
+    description: "Service integration tests. Start required databases, services, containers, or local servers."
+    depends_on:
+      - unit
+    commands:
+      integration:
+        run: ""
+        cwd: ""
+        required: false
+        description: "Project integration command or script."
+
+  e2e:
+    required: false
+    description: "Browser, API, or user-flow tests against the integrated system."
+    depends_on:
+      - integration
+    commands:
+      e2e:
+        run: ""
+        cwd: ""
+        required: false
+        description: "Project e2e command or script."
+
+  delivery:
+    required: true
+    description: "Final Harness delivery gate. Requires all prior required stages to pass."
+    depends_on:
+      - unit
+      - integration
+    checks:
+      require_stage_reports:
+        required: true
+      require_no_unexplained_skips:
+        required: true
+
+output:
+  report: .harness/reports/verification-report.yaml
+  stage_reports:
+    unit: .harness/reports/unit-report.yaml
+    integration: .harness/reports/integration-report.yaml
+    e2e: .harness/reports/e2e-report.yaml

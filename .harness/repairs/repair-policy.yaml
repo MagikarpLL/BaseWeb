@@ -1,0 +1,8 @@
+version: 1
+default_attempt_limit: 2
+requires_failed_verification_evidence: true
+forbidden:
+  - changing_acceptance_criteria_to_pass
+  - editing_rules_without_confirmation
+  - editing_adapters_without_confirmation
+  - broad_scope_changes_without_replanning

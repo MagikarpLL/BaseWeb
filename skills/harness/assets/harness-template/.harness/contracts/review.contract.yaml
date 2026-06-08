@@ -1,0 +1,11 @@
+version: 1
+required_inputs:
+  - active_spec
+  - active_plan
+  - verification_report
+required_concepts:
+  - requirement_fit
+  - verification_status
+  - residual_risks
+  - delivery_readiness
+gate: pr

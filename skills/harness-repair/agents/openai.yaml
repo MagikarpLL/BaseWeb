@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Repair"
+  short_description: "Repair with bounded attempts"
+  default_prompt: "Use Harness Repair to perform evidence-based self-repair after verification fails, with strict attempt limits."
